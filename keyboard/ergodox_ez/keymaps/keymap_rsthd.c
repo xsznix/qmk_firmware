@@ -26,7 +26,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|  L4  |           |  L4  |------+------+------+------+------+--------|
  * | LShift |   /  |   V  |   G  |   P  |   B  |      |           |      |   X  |   W  |   ,  |   ;  |   -  | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |  fn  |Dvorak| Down |  Up  |   [  |                                       |   ]  | Left | Right|QWERTY| L9?? |
+ *   |  fn  |Dvorak|   [  | Down |  Up  |                                       | Left | Right|   ]  |QWERTY| L9?? |
  *   `----------------------------------'                                       `----------------------------------'
  *                                       ,--------------.       ,--------------.
  *                                       | LCtrl | LAlt |       | RAlt | RCtrl |
@@ -44,16 +44,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,  KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   MO(5),
         KC_ESC,  KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
         KC_LSFT, KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   MO(4),
-        KC_APP,  TG(DVORAK), KC_DOWN, KC_UP, KC_LBRC,
+        KC_APP,  TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
                                              KC_LCTRL, KC_LALT,
                                                        KC_LGUI,
                                              KC_E,     KC_BSPC, MO(7),
         // right hand
-        MO(6), KC_6,   KC_0,    KC_9,    KC_8,      KC_7,       KC_BSLS,
-        MO(5), KC_Z,   KC_L,    KC_COMM, KC_U,      KC_Q,       KC_EQUAL,
-               KC_M,   KC_N,    KC_A,    KC_I,      KC_O,       KC_QUOTE,
-        MO(4), KC_X,   KC_W,    KC_DOT,  KC_SCOLON, KC_MINS,    KC_RSFT,
-                       KC_RBRC, KC_LEFT, KC_RIGHT,  TG(QWERTY), KC_FN1,
+        MO(6), KC_6,   KC_0,    KC_9,     KC_8,      KC_7,       KC_BSLS,
+        MO(5), KC_Z,   KC_L,    KC_COMM,  KC_U,      KC_Q,       KC_EQUAL,
+               KC_M,   KC_N,    KC_A,     KC_I,      KC_O,       KC_QUOTE,
+        MO(4), KC_X,   KC_W,    KC_DOT,   KC_SCOLON, KC_MINS,    KC_RSFT,
+                       KC_LEFT, KC_RIGHT, KC_RBRC,   TG(QWERTY), KC_FN1,
         KC_RALT, KC_RCTRL,
         KC_RGUI,
         MO(7),   KC_ENT, KC_SPC
