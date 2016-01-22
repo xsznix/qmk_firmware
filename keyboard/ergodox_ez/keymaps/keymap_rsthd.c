@@ -228,9 +228,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |      | INS  | HOM  | PGUP |      |      |           |      |      |  M1  | M-up |  M2  |Scrl-u|        |
+ * |        |      | INS  | HOM  | PGUP |C-S-tb|      |           |      |      |  M1  | M-up |  M2  |Scrl-u|        |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      | DEL  | END  | PGDN |      |------|           |------|      |M-left| M-dn |M-rght|Scrl-d|        |
+ * |        |      | DEL  | END  | PGDN |C-tab |------|           |------|      |M-left| M-dn |M-rght|Scrl-d|        |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |  ^z  |  ^x  |  ^c  |  ^v  |      |      |           |      |      | Mute | Vol- | Vol+ |      |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
@@ -247,9 +247,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [MEDIA] = KEYMAP(
        // left hand
        KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    KC_TRNS,
-       KC_TRNS, LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),       KC_TRNS,
+       KC_TRNS, LGUI(KC_Z), LGUI(KC_X), LGUI(KC_C), LGUI(KC_V), KC_TRNS,            KC_TRNS,
        KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
@@ -405,15 +405,25 @@ void * matrix_scan_user(void) {
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();
 
-    if (layer & 1) {
+    switch (layer) {
+      case 0:
+      break;
+
+      case 1:
       ergodox_right_led_1_on();
-    }
+      break;
 
-    if (layer & 2) {
+      case 2:
       ergodox_right_led_2_on();
-    }
+      break;
 
-    if (layer & 4) {
+      case 3:
+      ergodox_right_led_3_on();
+      break;
+
+      default:
+      ergodox_right_led_1_on();
+      ergodox_right_led_2_on();
       ergodox_right_led_3_on();
     }
 };
