@@ -17,6 +17,9 @@
 # Target file name (without extension).
 TARGET = ergodox_ez
 
+# Use the RSTHD keymap.
+KEYMAP = rsthd
+
 
 # Directory common source filess exist
 TOP_DIR = ../..
