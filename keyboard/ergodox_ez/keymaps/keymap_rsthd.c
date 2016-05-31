@@ -5,18 +5,19 @@
 #include "debug.h"
 #include "action_layer.h"
 
-#define RSTHD   0
-#define DVORAK  1
-#define QWERTY  2
-#define COLEMAK 3
-#define NUMPAD  4
-#define MEDIA   5
-#define SLATE   6
-#define SPECIAL 7
-#define PLOVER  8
+#define RSTHD     0
+#define LINUX_MOD 1
+#define DVORAK    2
+#define QWERTY    3
+#define COLEMAK   4
+#define NUMPAD    5
+#define MEDIA     6
+#define MEDIA_LIN 7
+#define SLATE     8
+#define SPECIAL   9
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-/* Keymap 0: RSTHD
+/* Keymap 0: RSTHD, with OS X-style modifiers
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |   `    |   7  |   8  |   9  |   0  |   5  | LCtl |           | RCtl |   6  |   1  |   2  |   3  |   4  |   \    |
@@ -27,39 +28,82 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------| LGui |           | RGui |------+------+------+------+------+--------|
  * | LShift |   /  |   V  |   G  |   P  |   B  |      |           |      |   X  |   W  |   .  |   ;  |   -  | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |  fn  |Dvorak|   [  | Down |  Up  |                                       | Left | Right|   ]  |QWERTY| L8?? |
+ *   | ^Spc |Dvorak|   [  | Down |  Up  |                                       | Left | Right|   ]  |QWERTY| ^Spc |
  *   `----------------------------------'                                       `----------------------------------'
  *                                       ,--------------.       ,--------------.
- *                                       |  L4   | L5   |       | L5   |  L4   |
+ *                                       | Numpad| Media|       | Media| Numpad|
  *                                ,------|-------|------|       |------+-------+-------.
- *                                |      |       | L6   |       | L6   |       |       |
+ *                                |      |       | Slate|       | Slate|       |       |
  *                                |  E   | Bksp  |------|       |------| Enter | Space |
- *                                |      |       | L7   |       | L7   |       |       |
+ *                                |      |       | Speci|       | Speci|       |       |
  *                                `---------------------'       `----------------------'
  */
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
 // Otherwise, it needs KC_*
 [RSTHD] = KEYMAP(  // layer 0 : default
         // left hand
-        KC_GRV,  KC_7,       KC_8,    KC_9,  KC_0,   KC_5,   KC_LCTL,
-        KC_TAB,  KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
-        KC_ESC,  KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
-        KC_LSFT, KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LGUI,
-        KC_APP,  TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
-                                             MO(4), MO(5),
-                                                    MO(6),
-                                             KC_E,  KC_BSPC, MO(7),
+        KC_GRV,       KC_7,       KC_8,    KC_9,  KC_0,   KC_5,   KC_LCTL,
+        KC_TAB,       KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
+        KC_ESC,       KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
+        KC_LSFT,      KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LGUI,
+        LGUI(KC_SPC), TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
+                                        MO(NUMPAD), MO(MEDIA),
+                                                    MO(SLATE),
+                                    KC_E,  KC_BSPC, MO(SPECIAL),
         // right hand
         KC_RCTL, KC_6,   KC_1,    KC_2,     KC_3,      KC_4,       KC_BSLS,
         KC_RALT, KC_Z,   KC_L,    KC_COMM,  KC_U,      KC_Q,       KC_EQUAL,
                  KC_M,   KC_N,    KC_A,     KC_I,      KC_O,       KC_QUOTE,
         KC_RGUI, KC_X,   KC_W,    KC_DOT,   KC_SCOLON, KC_MINS,    KC_RSFT,
-                       KC_LEFT, KC_RIGHT, KC_RBRC,   TG(QWERTY), KC_FN1,
-        MO(5), MO(4),
-        MO(6),
-        MO(7), KC_ENT, KC_SPC
+                       KC_LEFT, KC_RIGHT, KC_RBRC,   TG(QWERTY), LCTL(KC_SPC),
+        MO(MEDIA),   MO(NUMPAD),
+        MO(SLATE),
+        MO(SPECIAL), KC_ENT, KC_SPC
     ),
-/* Keymap 1: Dvorak
+/* Keymap 1: RSTHD, with Linux-style modifiers
+ *
+ * ,--------------------------------------------------.           ,--------------------------------------------------.
+ * |   `    |   7  |   8  |   9  |   0  |   5  | LGui |           | RGui |   6  |   1  |   2  |   3  |   4  |   \    |
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+ * | Tab    |   J  |   C  |   Y  |   F  |   K  | LAlt |           | RAlt |   Z  |   L  |   ,  |   U  |   Q  |   =    |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * | Esc    |   R  |   S  |   T  |   H  |   D  |------|           |------|   M  |   N  |   A  |   I  |   O  |   '    |
+ * |--------+------+------+------+------+------| LCtl |           | RCtl |------+------+------+------+------+--------|
+ * | LShift |   /  |   V  |   G  |   P  |   B  |      |           |      |   X  |   W  |   .  |   ;  |   -  | RShift |
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+ *   | ^W   |Dvorak|   [  | Down |  Up  |                                       | Left | Right|   ]  |QWERTY| ^Spc |
+ *   `----------------------------------'                                       `----------------------------------'
+ *                                       ,--------------.       ,--------------.
+ *                                       | Numpad| Media|       | Media| Numpad|
+ *                                ,------|-------|------|       |------+-------+-------.
+ *                                |      |       | Slate|       | Slate|       |       |
+ *                                |  E   | Bksp  |------|       |------| Enter | Space |
+ *                                |      |       | Speci|       | Speci|       |       |
+ *                                `---------------------'       `----------------------'
+ */
+// If it accepts an argument (i.e, is a function), it doesn't need KC_.
+// Otherwise, it needs KC_*
+[LINUX_MOD] = KEYMAP(  // layer 1: alternate default
+        // left hand
+        KC_GRV,     KC_7,       KC_8,    KC_9,  KC_0,   KC_5,   KC_LGUI,
+        KC_TAB,     KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
+        KC_ESC,     KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
+        KC_LSFT,    KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LCTL,
+        LGUI(KC_W), TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
+                                        MO(NUMPAD), MO(MEDIA_LIN),
+                                                    MO(SLATE),
+                                    KC_E,  KC_BSPC, MO(SPECIAL),
+        // right hand
+        KC_RGUI, KC_6,   KC_1,    KC_2,     KC_3,      KC_4,       KC_BSLS,
+        KC_RALT, KC_Z,   KC_L,    KC_COMM,  KC_U,      KC_Q,       KC_EQUAL,
+                 KC_M,   KC_N,    KC_A,     KC_I,      KC_O,       KC_QUOTE,
+        KC_RCTL, KC_X,   KC_W,    KC_DOT,   KC_SCOLON, KC_MINS,    KC_RSFT,
+                       KC_LEFT, KC_RIGHT, KC_RBRC,   TG(QWERTY), LCTL(LALT(KC_SPC)),
+        MO(MEDIA_LIN), MO(NUMPAD),
+        MO(SLATE),
+        MO(SPECIAL),   KC_ENT, KC_SPC
+    ),
+/* Keymap 2: Dvorak
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |    =   |
@@ -100,7 +144,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 2: QWERTY
+/* Keymap 3: QWERTY
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |    =   |
@@ -141,7 +185,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 3: Colemak
+/* Keymap 4: Colemak
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |    =   |
@@ -182,7 +226,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 4: Numpad
+/* Keymap 5: Numpad
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        | F13  | F14  | F15  | F16  |      |      |           |      |      |   7  |   8  |   9  |      |        |
@@ -215,7 +259,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                KC_TRNS, KC_TRNS, KC_TRNS,
        // right hand
        KC_TRNS, KC_TRNS, KC_KP_7, KC_KP_8, KC_KP_9,   KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_KP_4, KC_KP_5, KC_KP_5,   KC_KP_PLUS,  KC_KP_ASTERISK,
+       KC_TRNS, KC_TRNS, KC_KP_4, KC_KP_5, KC_KP_6,   KC_KP_PLUS,  KC_KP_ASTERISK,
                 KC_TRNS, KC_KP_1, KC_KP_2, KC_KP_3,   KC_KP_MINUS, KC_KP_SLASH,
        KC_TRNS, KC_TRNS, KC_KP_0, KC_TRNS, KC_KP_DOT, KC_KP_EQUAL, KC_TRNS,
                          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
@@ -223,7 +267,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_KP_ENTER, KC_TRNS
     ),
-/* Keymap 5: Media
+/* Keymap 6: Media
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
@@ -234,7 +278,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |  ^z  |  ^x  |  ^c  |  ^v  |      |      |           |      |      | Mute | Vol- | Vol+ |      |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
+ *   |  DF  |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
@@ -246,11 +290,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [MEDIA] = KEYMAP(
        // left hand
-       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
-       KC_TRNS, KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),       KC_TRNS,
-       KC_TRNS, LGUI(KC_Z), LGUI(KC_X), LGUI(KC_C), LGUI(KC_V), KC_TRNS,            KC_TRNS,
-       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
+       KC_TRNS,       KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
+       KC_TRNS,       KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
+       KC_TRNS,       KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),
+       KC_TRNS,       LGUI(KC_Z), LGUI(KC_X), LGUI(KC_C), LGUI(KC_V), KC_TRNS,            KC_TRNS,
+       DF(LINUX_MOD), KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
                                KC_TRNS, KC_TRNS, KC_TRNS,
@@ -264,7 +308,48 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 6: Slate
+/* Keymap 7: Media, with Linux-style modifiers for ^z, ^x, ^c, ^v
+ *
+ * ,--------------------------------------------------.           ,--------------------------------------------------.
+ * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+ * |        |      | INS  | HOM  | PGUP |C-S-tb|      |           |      |      |  M1  | M-up |  M2  |Scrl-u|        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |      | DEL  | END  | PGDN |C-tab |------|           |------|      |M-left| M-dn |M-rght|Scrl-d|        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |  ^z  |  ^x  |  ^c  |  ^v  |      |      |           |      |      | Mute | Vol- | Vol+ |      |        |
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+ *   |  DF  |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
+ *   `----------------------------------'                                       `----------------------------------'
+ *                                        ,-------------.       ,-------------.
+ *                                        |      |      |       |      |      |
+ *                                 ,------|------|------|       |------+------+------.
+ *                                 |      |      |      |       |      |      |      |
+ *                                 |      |      |------|       |------|      |      |
+ *                                 |      |      |      |       |      |      |      |
+ *                                 `--------------------'       `--------------------'
+ */
+[MEDIA_LIN] = KEYMAP(
+       // left hand
+       KC_TRNS,   KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
+       KC_TRNS,   KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
+       KC_TRNS,   KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),
+       KC_TRNS,   LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), KC_TRNS,            KC_TRNS,
+       DF(RSTHD), KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
+                                        KC_TRNS, KC_TRNS,
+                                                 KC_TRNS,
+                               KC_TRNS, KC_TRNS, KC_TRNS,
+       // right hand
+       KC_TRNS, KC_TRNS, KC_TRNS, KC_BTN3, KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS, KC_BTN1, KC_MS_U, KC_BTN2, KC_WH_U, KC_TRNS,
+                KC_TRNS, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D, KC_TRNS,
+       KC_TRNS, KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, KC_TRNS, KC_TRNS,
+                         KC_MPRV, KC_MPLY, KC_MNXT, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,
+       KC_TRNS,
+       KC_TRNS, KC_TRNS, KC_TRNS
+    ),
+/* Keymap 8: Slate
  *
  * This is a magical layer. Its significance is unknown to those who do not know
  * the ways of the Dark Side.
@@ -289,7 +374,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 7: Special
+/* Keymap 9: Special
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
@@ -406,18 +491,23 @@ void * matrix_scan_user(void) {
     ergodox_right_led_3_off();
 
     switch (layer) {
-      case 0:
+      case RSTHD:
       break;
 
-      case 1:
+      case LINUX_MOD:
+      ergodox_right_led_1_on();
+      ergodox_right_led_3_on();
+      break;
+
+      case DVORAK:
       ergodox_right_led_1_on();
       break;
 
-      case 2:
+      case QWERTY:
       ergodox_right_led_2_on();
       break;
 
-      case 3:
+      case COLEMAK:
       ergodox_right_led_3_on();
       break;
 
