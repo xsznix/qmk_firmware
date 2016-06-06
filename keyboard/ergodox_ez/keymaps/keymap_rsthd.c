@@ -5,18 +5,33 @@
 #include "debug.h"
 #include "action_layer.h"
 
+// Comment out the below line to use OS X-style modifiers.
+// #define USE_LINUX_MODIFIERS
+
+#ifndef USE_LINUX_MODIFIERS
 #define RSTHD     0
-#define LINUX_MOD 1
-#define DVORAK    2
-#define QWERTY    3
-#define COLEMAK   4
-#define NUMPAD    5
-#define MEDIA     6
-#define MEDIA_LIN 7
-#define SLATE     8
-#define SPECIAL   9
+#define DVORAK    1
+#define QWERTY    2
+#define COLEMAK   3
+#define NUMPAD    4
+#define MEDIA     5
+#define SLATE     6
+#define SPECIAL   7
+#else
+#define LINUX_MOD 0
+#define DVORAK    1
+#define QWERTY    2
+#define COLEMAK   3
+#define NUMPAD    4
+#define MEDIA_LIN 5
+#define SLATE     6
+#define SPECIAL   7
+#endif
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+
+#ifndef USE_LINUX_MODIFIERS
+
 /* Keymap 0: RSTHD, with OS X-style modifiers
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
@@ -60,7 +75,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MO(SLATE),
         MO(SPECIAL), KC_ENT, KC_SPC
     ),
-/* Keymap 1: RSTHD, with Linux-style modifiers
+/* Keymap 0: RSTHD, with Linux-style modifiers
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |   `    |   7  |   8  |   9  |   0  |   5  | LGui |           | RGui |   6  |   1  |   2  |   3  |   4  |   \    |
@@ -81,6 +96,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                |      |       | Speci|       | Speci|       |       |
  *                                `---------------------'       `----------------------'
  */
+
+#else // #ifndef USE_LINUX_MODIFIERS
+
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
 // Otherwise, it needs KC_*
 [LINUX_MOD] = KEYMAP(  // layer 1: alternate default
@@ -89,7 +107,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,     KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
         KC_ESC,     KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
         KC_LSFT,    KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LCTL,
-        LGUI(KC_W), TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
+        LCTL(KC_W), TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
                                         MO(NUMPAD), MO(MEDIA_LIN),
                                                     MO(SLATE),
                                     KC_E,  KC_BSPC, MO(SPECIAL),
@@ -103,7 +121,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MO(SLATE),
         MO(SPECIAL),   KC_ENT, KC_SPC
     ),
-/* Keymap 2: Dvorak
+
+#endif // #ifndef USE_LINUX_MODIFIERS
+
+/* Keymap 1: Dvorak
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |    =   |
@@ -144,7 +165,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 3: QWERTY
+/* Keymap 2: QWERTY
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |    =   |
@@ -185,7 +206,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 4: Colemak
+/* Keymap 3: Colemak
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |    =   |
@@ -226,7 +247,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 5: Numpad
+/* Keymap 4: Numpad
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        | F13  | F14  | F15  | F16  |      |      |           |      |      |   7  |   8  |   9  |      |        |
@@ -267,7 +288,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_KP_ENTER, KC_TRNS
     ),
-/* Keymap 6: Media
+
+#ifndef USE_LINUX_MODIFIERS
+
+/* Keymap 5: Media
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
@@ -278,7 +302,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |  ^z  |  ^x  |  ^c  |  ^v  |      |      |           |      |      | Mute | Vol- | Vol+ |      |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |  DF  |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
+ *   |      |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
@@ -290,11 +314,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [MEDIA] = KEYMAP(
        // left hand
-       KC_TRNS,       KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
-       KC_TRNS,       KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
-       KC_TRNS,       KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),
-       KC_TRNS,       LGUI(KC_Z), LGUI(KC_X), LGUI(KC_C), LGUI(KC_V), KC_TRNS,            KC_TRNS,
-       DF(LINUX_MOD), KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),
+       KC_TRNS, LGUI(KC_Z), LGUI(KC_X), LGUI(KC_C), LGUI(KC_V), KC_TRNS,            KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
                                KC_TRNS, KC_TRNS, KC_TRNS,
@@ -308,7 +332,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 7: Media, with Linux-style modifiers for ^z, ^x, ^c, ^v
+
+#else // #ifndef USE_LINUX_MODIFIERS
+
+/* Keymap 5: Media, with Linux-style modifiers for ^z, ^x, ^c, ^v
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
@@ -319,7 +346,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |  ^z  |  ^x  |  ^c  |  ^v  |      |      |           |      |      | Mute | Vol- | Vol+ |      |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |  DF  |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
+ *   |      |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
@@ -331,11 +358,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [MEDIA_LIN] = KEYMAP(
        // left hand
-       KC_TRNS,   KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
-       KC_TRNS,   KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
-       KC_TRNS,   KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),
-       KC_TRNS,   LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), KC_TRNS,            KC_TRNS,
-       DF(RSTHD), KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),
+       KC_TRNS, LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), KC_TRNS,            KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
                                KC_TRNS, KC_TRNS, KC_TRNS,
@@ -349,7 +376,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 8: Slate
+
+#endif // #ifndef USE_LINUX_MODIFIERS
+
+/* Keymap 6: Slate
  *
  * This is a magical layer. Its significance is unknown to those who do not know
  * the ways of the Dark Side.
@@ -374,7 +404,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 9: Special
+/* Keymap 7: Special
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
@@ -491,12 +521,11 @@ void * matrix_scan_user(void) {
     ergodox_right_led_3_off();
 
     switch (layer) {
+#ifndef USE_LINUX_MODIFIERS
       case RSTHD:
-      break;
-
+#else
       case LINUX_MOD:
-      ergodox_right_led_1_on();
-      ergodox_right_led_3_on();
+#endif
       break;
 
       case DVORAK:
