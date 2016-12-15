@@ -12,20 +12,18 @@
 #define RSTHD     0
 #define DVORAK    1
 #define QWERTY    2
-#define COLEMAK   3
-#define NUMPAD    4
-#define MEDIA     5
-#define SLATE     6
-#define SPECIAL   7
+#define NUMPAD    3
+#define MEDIA     4
+#define SLATE     5
+#define SPECIAL   6
 #else
 #define LINUX_MOD 0
 #define DVORAK    1
 #define QWERTY    2
-#define COLEMAK   3
-#define NUMPAD    4
-#define MEDIA_LIN 5
-#define SLATE     6
-#define SPECIAL   7
+#define NUMPAD    3
+#define MEDIA_LIN 4
+#define SLATE     5
+#define SPECIAL   6
 #endif
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -57,11 +55,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 [RSTHD] = KEYMAP(  // layer 0 : default
         // left hand
-        KC_GRV,       KC_7,       KC_8,    KC_9,  KC_0,   KC_5,   KC_LCTL,
-        KC_TAB,       KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
-        KC_ESC,       KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
-        KC_LSFT,      KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LGUI,
-        LGUI(KC_SPC), TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
+        KC_GRV,             KC_7,       KC_8,    KC_9,  KC_0,   KC_5,   KC_LCTL,
+        KC_TAB,             KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
+        KC_ESC,             KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
+        KC_LSFT,            KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LGUI,
+        LALT(LSFT(KC_SPC)), TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
                                         MO(NUMPAD), MO(MEDIA),
                                                     MO(SLATE),
                                     KC_E,  KC_BSPC, MO(SPECIAL),
@@ -154,7 +152,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
-                           TG(COLEMAK), KC_TRNS, KC_TRNS,
+                                KC_SPC, KC_TRNS, KC_TRNS,
        // right hand
        KC_TRNS, KC_6, KC_7,    KC_8,   KC_9,    KC_0,     KC_EQUAL,
        KC_TRNS, KC_F, KC_G,    KC_C,   KC_R,    KC_L,     KC_SLASH,
@@ -195,7 +193,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_BSLS, KC_TRNS, KC_TRNS, KC_TRNS,
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
-                           TG(COLEMAK), KC_TRNS, KC_TRNS,
+                                KC_SPC, KC_TRNS, KC_TRNS,
        // right hand
        KC_TRNS, KC_6, KC_7,    KC_8,   KC_9,    KC_0,     KC_EQUAL,
        KC_TRNS, KC_Y, KC_U,    KC_I,   KC_O,    KC_P,     KC_MINUS,
@@ -206,48 +204,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 3: Colemak
- *
- * ,--------------------------------------------------.           ,--------------------------------------------------.
- * |        |   1  |   2  |   3  |   4  |   5  |      |           |      |   6  |   7  |   8  |   9  |   0  |    =   |
- * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |   Q  |   W  |   F  |   P  |   G  |      |           |      |   J  |   L  |   U  |   Y  |   ;  |    -   |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |   A  |   R  |   S  |   T  |   D  |------|           |------|   H  |   N  |   E  |   I  |   O  |    '   |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |   Z  |   X  |   C  |   V  |   B  |      |           |      |   K  |   M  |   ,  |   .  |   /  |        |
- * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |   \  |      |      |      |                                       |      |      |      |   \  |      |
- *   `----------------------------------'                                       `----------------------------------'
- *                                        ,-------------.       ,-------------.
- *                                        |      |      |       |      |      |
- *                                 ,------|------|------|       |------+------+------.
- *                                 |      |      |      |       |      |      |      |
- *                                 |  L3  |      |------|       |------|      |      |
- *                                 |      |      |      |       |      |      |      |
- *                                 `--------------------'       `--------------------'
- */
-[COLEMAK] = KEYMAP(
-       // left hand
-       KC_TRNS, KC_1,    KC_2,    KC_3,    KC_4,    KC_5, KC_TRNS,
-       KC_TRNS, KC_Q,    KC_W,    KC_F,    KC_P,    KC_G, KC_TRNS,
-       KC_TRNS, KC_A,    KC_R,    KC_S,    KC_T,    KC_D,
-       KC_TRNS, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B, KC_TRNS,
-       KC_TRNS, KC_BSLS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_6, KC_7,    KC_8,   KC_9,    KC_0,     KC_EQUAL,
-       KC_TRNS, KC_J, KC_L,    KC_U,   KC_Y,    KC_SCLN,  KC_SLASH,
-                KC_H, KC_N,    KC_E,   KC_I,    KC_O,     KC_MINUS,
-       KC_TRNS, KC_K, KC_M,    KC_COMM,KC_DOT,  KC_SLSH,  KC_TRNS,
-                      KC_TRNS, KC_TRNS, KC_TRNS,KC_BSLS,  KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-/* Keymap 4: Numpad
+/* Keymap 3: Numpad
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        | F13  | F14  | F15  | F16  |      |      |           |      |      |   7  |   8  |   9  |      |        |
@@ -291,7 +248,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifndef USE_LINUX_MODIFIERS
 
-/* Keymap 5: Media
+/* Keymap 4: Media
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
@@ -335,7 +292,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #else // #ifndef USE_LINUX_MODIFIERS
 
-/* Keymap 5: Media, with Linux-style modifiers for ^z, ^x, ^c, ^v
+/* Keymap 4: Media, with Linux-style modifiers for ^z, ^x, ^c, ^v
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
@@ -379,7 +336,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #endif // #ifndef USE_LINUX_MODIFIERS
 
-/* Keymap 6: Slate
+/* Keymap 5: Slate
  *
  * This is a magical layer. Its significance is unknown to those who do not know
  * the ways of the Dark Side.
@@ -404,7 +361,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-/* Keymap 7: Special
+/* Keymap 6: Special
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
@@ -534,10 +491,6 @@ void * matrix_scan_user(void) {
 
       case QWERTY:
       ergodox_right_led_2_on();
-      break;
-
-      case COLEMAK:
-      ergodox_right_led_3_on();
       break;
 
       default:
