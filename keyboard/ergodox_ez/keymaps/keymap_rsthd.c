@@ -41,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------| LGui |           | RGui |------+------+------+------+------+--------|
  * | LShift |   /  |   V  |   G  |   P  |   B  |      |           |      |   X  |   W  |   .  |   ;  |   -  | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   | ^Spc |Dvorak|   [  | Down |  Up  |                                       | Left | Right|   ]  |QWERTY| ^Spc |
+ *   | ^Spc |Dvorak|  *<- | Down |  Up  |                                       | Left | Right|  *-> |QWERTY| ^Spc |
  *   `----------------------------------'                                       `----------------------------------'
  *                                       ,--------------.       ,--------------.
  *                                       | Numpad| Media|       | Media| Numpad|
@@ -55,11 +55,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 [RSTHD] = KEYMAP(  // layer 0 : default
         // left hand
-        KC_GRV,             KC_7,       KC_8,    KC_9,  KC_0,   KC_5,   KC_LCTL,
-        KC_TAB,             KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
-        KC_ESC,             KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
-        KC_LSFT,            KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LGUI,
-        LALT(LSFT(KC_SPC)), TG(DVORAK), KC_LBRC, KC_DOWN, KC_UP,
+        KC_GRV,             KC_7,       KC_8,                      KC_9,  KC_0,   KC_5,   KC_LCTL,
+        KC_TAB,             KC_J,       KC_C,                      KC_Y,  KC_F,   KC_K,   KC_LALT,
+        KC_ESC,             KC_R,       KC_S,                      KC_T,  KC_H,   KC_D,
+        KC_LSFT,            KC_SLSH,    KC_V,                      KC_G,  KC_P,   KC_B,   KC_LGUI,
+        LALT(LSFT(KC_SPC)), TG(DVORAK), LCTL(LALT(LSFT(KC_LEFT))), KC_DOWN, KC_UP,
                                         MO(NUMPAD), MO(MEDIA),
                                                     MO(SLATE),
                                     KC_E,  KC_BSPC, MO(SPECIAL),
@@ -68,7 +68,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_RALT, KC_Z,   KC_L,    KC_COMM,  KC_U,      KC_Q,       KC_EQUAL,
                  KC_M,   KC_N,    KC_A,     KC_I,      KC_O,       KC_QUOTE,
         KC_RGUI, KC_X,   KC_W,    KC_DOT,   KC_SCOLON, KC_MINS,    KC_RSFT,
-                       KC_LEFT, KC_RIGHT, KC_RBRC,   TG(QWERTY), LCTL(KC_SPC),
+                       KC_LEFT, KC_RIGHT, LCTL(LALT(LSFT(KC_RIGHT))), TG(QWERTY), LCTL(KC_SPC),
         MO(MEDIA),   MO(NUMPAD),
         MO(SLATE),
         MO(SPECIAL), KC_ENT, KC_SPC
@@ -251,15 +251,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 4: Media
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
- * |        |      |      |      |      |      |      |           |      |      |      |  M3  |      |      |        |
+ * |        |      |      |      |      |      |      |           |      |      | **6  | **7  | **8  | **9  |  **0   |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |      | INS  | HOM  | PGUP |C-S-tb|      |           |      |      |  M1  | M-up |  M2  |Scrl-u|        |
+ * |        |      | INS  | HOM  | PGUP |C-S-tb|      |           |      |      | **1  | **2  | **3  | **4  |  **5   |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      | DEL  | END  | PGDN |C-tab |------|           |------|      |M-left| M-dn |M-rght|Scrl-d|        |
+ * |        |      | DEL  | END  | PGDN |C-tab |------|           |------|      |  *6  |  *7  |  *8  |  *9  |   *0   |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |  ^z  |  ^x  |  ^c  |  ^v  |      |      |           |      |      | Mute | Vol- | Vol+ |      |        |
+ * |        |  ^z  |  ^x  |  ^c  |  ^v  |      |      |           |      |      |  *1  |  *2  |  *3  |  *4  |   *5   |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |bl-tog| bl - | bl + |                                       | Back |Pause | Fwd  |      |      |
+ *   |      |      | Mute | Vol- | Vol+ |                                       | Back |Pause | Fwd  |      |      |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
@@ -275,16 +275,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
        KC_TRNS, KC_TRNS,    KC_DEL,     KC_END,     KC_PGDN,    LCTL(KC_TAB),
        KC_TRNS, LGUI(KC_Z), LGUI(KC_X), LGUI(KC_C), LGUI(KC_V), KC_TRNS,            KC_TRNS,
-       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
+       KC_TRNS, KC_TRNS,    KC_MUTE,    KC_VOLD,    KC_VOLU,
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
                                KC_TRNS, KC_TRNS, KC_TRNS,
        // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_BTN3, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_BTN1, KC_MS_U, KC_BTN2, KC_WH_U, KC_TRNS,
-                KC_TRNS, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, KC_TRNS, KC_TRNS,
-                         KC_MPRV, KC_MPLY, KC_MNXT, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS, LCTL(LALT(LSFT(KC_6))), LCTL(LALT(LSFT(KC_7))), LCTL(LALT(LSFT(KC_8))), LCTL(LALT(LSFT(KC_9))), LCTL(LALT(LSFT(KC_0))),
+       KC_TRNS, KC_TRNS, LCTL(LALT(LSFT(KC_1))), LCTL(LALT(LSFT(KC_2))), LCTL(LALT(LSFT(KC_3))), LCTL(LALT(LSFT(KC_4))), LCTL(LALT(LSFT(KC_5))),
+                KC_TRNS, LCTL(LALT(KC_6)),       LCTL(LALT(KC_7)),       LCTL(LALT(KC_8)),       LCTL(LALT(KC_9)),       LCTL(LALT(KC_0)),
+       KC_TRNS, KC_TRNS, LCTL(LALT(KC_1)),       LCTL(LALT(KC_2)),       LCTL(LALT(KC_3)),       LCTL(LALT(KC_4)),       LCTL(LALT(KC_5)),
+                         KC_MPRV,                KC_MPLY,                KC_MNXT,                KC_TRNS,                KC_TRNS,
        KC_TRNS, KC_TRNS,
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
