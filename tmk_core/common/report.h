@@ -84,6 +84,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   define KEYBOARD_REPORT_SIZE NKRO_EPSIZE
 #   define KEYBOARD_REPORT_KEYS (NKRO_EPSIZE - 2)
 #   define KEYBOARD_REPORT_BITS (NKRO_EPSIZE - 1)
+#elif defined(PROTOCOL_CHIBIOS) && defined(NKRO_ENABLE)
+#   include "protocol/chibios/usb_main.h"
+#   define KEYBOARD_REPORT_SIZE NKRO_EPSIZE
+#   define KEYBOARD_REPORT_KEYS (NKRO_EPSIZE - 2)
+#   define KEYBOARD_REPORT_BITS (NKRO_EPSIZE - 1)
 
 #else
 #   define KEYBOARD_REPORT_SIZE 8
@@ -129,13 +134,6 @@ typedef union {
     } nkro;
 #endif
 } __attribute__ ((packed)) report_keyboard_t;
-/*
-typedef struct {
-    uint8_t mods;
-    uint8_t reserved;
-    uint8_t keys[REPORT_KEYS];
-} __attribute__ ((packed)) report_keyboard_t;
-*/
 
 typedef struct {
     uint8_t buttons;

@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define IS_SPECIAL(code)         ((0xA5 <= (code) && (code) <= 0xDF) || (0xE8 <= (code) && (code) <= 0xFF))
 #define IS_SYSTEM(code)          (KC_PWR       <= (code) && (code) <= KC_WAKE)
-#define IS_CONSUMER(code)        (KC_MUTE      <= (code) && (code) <= KC_WFAV)
+#define IS_CONSUMER(code)        (KC_MUTE      <= (code) && (code) <= KC_MRWD)
 #define IS_FN(code)              (KC_FN0       <= (code) && (code) <= KC_FN31)
 #define IS_MOUSEKEY(code)        (KC_MS_UP     <= (code) && (code) <= KC_MS_ACCEL2)
 #define IS_MOUSEKEY_MOVE(code)   (KC_MS_UP     <= (code) && (code) <= KC_MS_RIGHT)
@@ -85,7 +85,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define KC_LCAP KC_LOCKING_CAPS
 #define KC_LNUM KC_LOCKING_NUM
 #define KC_LSCR KC_LOCKING_SCROLL
-#define KC_ERAS KC_ALT_ERASE,
+#define KC_ERAS KC_ALT_ERASE
 #define KC_CLR  KC_CLEAR
 /* Japanese specific */
 #define KC_ZKHK KC_GRAVE
@@ -156,8 +156,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define KC_WSTP KC_WWW_STOP
 #define KC_WREF KC_WWW_REFRESH
 #define KC_WFAV KC_WWW_FAVORITES
-/* Jump to bootloader */
-#define KC_BTLD KC_BOOTLOADER
 /* Transparent */
 #define KC_TRANSPARENT  1
 #define KC_TRNS KC_TRANSPARENT
@@ -427,9 +425,6 @@ enum internal_special_keycodes {
     KC_WWW_FAVORITES,
     KC_MEDIA_FAST_FORWARD,
     KC_MEDIA_REWIND,    /* 0xBC */
-
-    /* Jump to bootloader */
-    KC_BOOTLOADER       = 0xBF,
 
     /* Fn key */
     KC_FN0              = 0xC0,

@@ -29,6 +29,9 @@ extern uint32_t default_layer_state;
 void default_layer_debug(void);
 void default_layer_set(uint32_t state);
 
+__attribute__((weak))
+uint32_t default_layer_state_set_kb(uint32_t state);
+
 #ifndef NO_ACTION_LAYER
 /* bitwise operation */
 void default_layer_or(uint32_t state);
@@ -68,8 +71,22 @@ void layer_xor(uint32_t state);
 #define layer_and(state)
 #define layer_xor(state)
 #define layer_debug()
+
+__attribute__((weak))
+uint32_t layer_state_set_kb(uint32_t state);
 #endif
 
+/* pressed actions cache */
+#if !defined(NO_ACTION_LAYER) && defined(PREVENT_STUCK_MODIFIERS)
+/* The number of bits needed to represent the layer number: log2(32). */
+#define MAX_LAYER_BITS 5
+void update_source_layers_cache(keypos_t key, uint8_t layer);
+uint8_t read_source_layers_cache(keypos_t key);
+#endif
+action_t store_or_get_action(bool pressed, keypos_t key);
+
+/* return the topmost non-transparent layer currently associated with key */
+int8_t layer_switch_get_layer(keypos_t key);
 
 /* return action depending on current layer status */
 action_t layer_switch_get_action(keypos_t key);

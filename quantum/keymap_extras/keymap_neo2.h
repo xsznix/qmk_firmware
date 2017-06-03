@@ -1,8 +1,23 @@
+/* Copyright 2016 Matthias Schmitt
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #ifndef KEYMAP_NEO2
 #define KEYMAP_NEO2
 
-#include "keymap_common.h"
-#include "keymap_extras/keymap_german.h"
+#include "keymap.h"
+#include "keymap_german.h"
 
 #define NEO_A KC_D
 #define NEO_B KC_N
@@ -34,6 +49,25 @@
 #define NEO_OE KC_X
 #define NEO_UE DE_Y
 #define NEO_SS DE_UE
+
+#define NEO_DOT DE_DOT
+#define NEO_COMM DE_COMM
+
+#define NEO_1 DE_1
+#define NEO_2 DE_2
+#define NEO_3 DE_3
+#define NEO_4 DE_4
+#define NEO_5 DE_5
+#define NEO_6 DE_6
+#define NEO_7 DE_7
+#define NEO_8 DE_8
+#define NEO_9 DE_9
+#define NEO_0 DE_0
+#define NEO_MINS DE_SS
+
+#define NEO_ACUT DE_PLUS
+#define NEO_GRV DE_ACUT
+#define NEO_CIRC DE_CIRC
 
 #define NEO_L1_L KC_CAPS
 #define NEO_L1_R DE_HASH

@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "action_macro.h"
 #include "action_util.h"
 #include "action.h"
+#include "wait.h"
 
 #ifdef DEBUG_ACTION
 #include "debug.h"
@@ -33,6 +34,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "nodebug.h"
 #endif
 
+int tp_buttons;
+
+#ifdef FAUXCLICKY_ENABLE
+#include <fauxclicky.h>
+#endif
 
 void action_exec(keyevent_t event)
 {
@@ -41,34 +47,120 @@ void action_exec(keyevent_t event)
         dprint("EVENT: "); debug_event(event); dprintln();
     }
 
+#ifdef FAUXCLICKY_ENABLE
+    if (IS_PRESSED(event)) {
+        FAUXCLICKY_ACTION_PRESS;
+    }
+    if (IS_RELEASED(event)) {
+        FAUXCLICKY_ACTION_RELEASE;
+    }
+    fauxclicky_check();
+#endif
+
+#ifdef ONEHAND_ENABLE
+    if (!IS_NOEVENT(event)) {
+        process_hand_swap(&event);
+    }
+#endif
+
     keyrecord_t record = { .event = event };
+
+#if (defined(ONESHOT_TIMEOUT) && (ONESHOT_TIMEOUT > 0))
+    if (has_oneshot_layer_timed_out()) {
+        dprintf("Oneshot layer: timeout\n");
+        clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+    }
+#endif
 
 #ifndef NO_ACTION_TAPPING
     action_tapping_process(record);
 #else
-    process_action(&record);
+    process_record(&record);
     if (!IS_NOEVENT(record.event)) {
         dprint("processed: "); debug_record(record); dprintln();
     }
 #endif
 }
 
-void process_action(keyrecord_t *record)
-{
-    keyevent_t event = record->event;
-#ifndef NO_ACTION_TAPPING
-    uint8_t tap_count = record->tap.count;
+#ifdef ONEHAND_ENABLE
+bool swap_hands = false;
+
+void process_hand_swap(keyevent_t *event) {
+    static swap_state_row_t swap_state[MATRIX_ROWS];
+
+    keypos_t pos = event->key;
+    swap_state_row_t col_bit = (swap_state_row_t)1<<pos.col;
+    bool do_swap = event->pressed ? swap_hands :
+                                    swap_state[pos.row] & (col_bit);
+
+    if (do_swap) {
+        event->key = hand_swap_config[pos.row][pos.col];
+        swap_state[pos.row] |= col_bit;
+    } else {
+        swap_state[pos.row] &= ~(col_bit);
+    }
+}
 #endif
 
-    if (IS_NOEVENT(event)) { return; }
+#if !defined(NO_ACTION_LAYER) && defined(PREVENT_STUCK_MODIFIERS)
+bool disable_action_cache = false;
 
-    action_t action = layer_switch_get_action(event.key);
+void process_record_nocache(keyrecord_t *record)
+{
+    disable_action_cache = true;
+    process_record(record);
+    disable_action_cache = false;
+}
+#else
+void process_record_nocache(keyrecord_t *record)
+{
+    process_record(record);
+}
+#endif
+
+__attribute__ ((weak))
+bool process_record_quantum(keyrecord_t *record) {
+    return true;
+}
+
+void process_record(keyrecord_t *record)
+{
+    if (IS_NOEVENT(record->event)) { return; }
+
+    if(!process_record_quantum(record))
+        return;
+
+    action_t action = store_or_get_action(record->event.pressed, record->event.key);
     dprint("ACTION: "); debug_action(action);
 #ifndef NO_ACTION_LAYER
     dprint(" layer_state: "); layer_debug();
     dprint(" default_layer_state: "); default_layer_debug();
 #endif
     dprintln();
+
+    process_action(record, action);
+}
+
+void process_action(keyrecord_t *record, action_t action)
+{
+    keyevent_t event = record->event;
+#ifndef NO_ACTION_TAPPING
+    uint8_t tap_count = record->tap.count;
+#endif
+
+    if (event.pressed) {
+        // clear the potential weak mods left by previously pressed keys
+        clear_weak_mods();
+    }
+
+#ifndef NO_ACTION_ONESHOT
+    bool do_release_oneshot = false;
+    // notice we only clear the one shot layer if the pressed key is not a modifier.
+    if (is_oneshot_layer_active() && event.pressed && !IS_MOD(action.key.code)) {
+        clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+        do_release_oneshot = !is_oneshot_layer_active();
+    }
+#endif
 
     switch (action.kind.id) {
         /* Key and Mods */
@@ -79,14 +171,25 @@ void process_action(keyrecord_t *record)
                                                                 action.key.mods<<4;
                 if (event.pressed) {
                     if (mods) {
-                        add_weak_mods(mods);
+                        if (IS_MOD(action.key.code) || action.key.code == KC_NO) {
+                            // e.g. LSFT(KC_LGUI): we don't want the LSFT to be weak as it would make it useless.
+                            // This also makes LSFT(KC_LGUI) behave exactly the same as LGUI(KC_LSFT).
+                            // Same applies for some keys like KC_MEH which are declared as MEH(KC_NO).
+                            add_mods(mods);
+                        } else {
+                            add_weak_mods(mods);
+                        }
                         send_keyboard_report();
                     }
                     register_code(action.key.code);
                 } else {
                     unregister_code(action.key.code);
                     if (mods) {
-                        del_weak_mods(mods);
+                        if (IS_MOD(action.key.code) || action.key.code == KC_NO) {
+                            del_mods(mods);
+                        } else {
+                            del_weak_mods(mods);
+                        }
                         send_keyboard_report();
                     }
                 }
@@ -104,24 +207,37 @@ void process_action(keyrecord_t *record)
                         // Oneshot modifier
                         if (event.pressed) {
                             if (tap_count == 0) {
+                                dprint("MODS_TAP: Oneshot: 0\n");
                                 register_mods(mods);
-                            }
-                            else if (tap_count == 1) {
+                            } else if (tap_count == 1) {
                                 dprint("MODS_TAP: Oneshot: start\n");
                                 set_oneshot_mods(mods);
-                            }
-                            else {
+                    #if defined(ONESHOT_TAP_TOGGLE) && ONESHOT_TAP_TOGGLE > 1
+                            } else if (tap_count == ONESHOT_TAP_TOGGLE) {
+                                dprint("MODS_TAP: Toggling oneshot");
+                                clear_oneshot_mods();
+                                set_oneshot_locked_mods(mods);
+                                register_mods(mods);
+                    #endif
+                            } else {
                                 register_mods(mods);
                             }
                         } else {
                             if (tap_count == 0) {
                                 clear_oneshot_mods();
                                 unregister_mods(mods);
-                            }
-                            else if (tap_count == 1) {
+                            } else if (tap_count == 1) {
                                 // Retain Oneshot mods
-                            }
-                            else {
+                    #if defined(ONESHOT_TAP_TOGGLE) && ONESHOT_TAP_TOGGLE > 1
+                                if (mods & get_mods()) {
+                                    clear_oneshot_locked_mods();
+                                    clear_oneshot_mods();
+                                    unregister_mods(mods);
+                                }
+                            } else if (tap_count == ONESHOT_TAP_TOGGLE) {
+                                // Toggle Oneshot Layer
+                    #endif
+                            } else {
                                 clear_oneshot_mods();
                                 unregister_mods(mods);
                             }
@@ -197,9 +313,35 @@ void process_action(keyrecord_t *record)
         /* Mouse key */
         case ACT_MOUSEKEY:
             if (event.pressed) {
+                switch (action.key.code) {
+                    case KC_MS_BTN1:
+                        tp_buttons |= (1<<0);
+                        break;
+                    case KC_MS_BTN2:
+                        tp_buttons |= (1<<1);
+                        break;
+                    case KC_MS_BTN3:
+                        tp_buttons |= (1<<2);
+                        break;
+                    default:
+                        break;
+                }
                 mousekey_on(action.key.code);
                 mousekey_send();
             } else {
+                switch (action.key.code) {
+                    case KC_MS_BTN1:
+                        tp_buttons &= ~(1<<0);
+                        break;
+                    case KC_MS_BTN2:
+                        tp_buttons &= ~(1<<1);
+                        break;
+                    case KC_MS_BTN3:
+                        tp_buttons &= ~(1<<2);
+                        break;
+                    default:
+                        break;
+                }
                 mousekey_off(action.key.code);
                 mousekey_send();
             }
@@ -274,6 +416,44 @@ void process_action(keyrecord_t *record)
                     event.pressed ? layer_move(action.layer_tap.val) :
                                     layer_clear();
                     break;
+            #ifndef NO_ACTION_ONESHOT
+                case OP_ONESHOT:
+                    // Oneshot modifier
+                #if defined(ONESHOT_TAP_TOGGLE) && ONESHOT_TAP_TOGGLE > 1
+                    do_release_oneshot = false;
+                    if (event.pressed) {
+                        del_mods(get_oneshot_locked_mods());
+                        if (get_oneshot_layer_state() == ONESHOT_TOGGLED) {
+                            reset_oneshot_layer();
+                            layer_off(action.layer_tap.val);
+                            break;
+                        } else if (tap_count < ONESHOT_TAP_TOGGLE) {
+                            layer_on(action.layer_tap.val);
+                            set_oneshot_layer(action.layer_tap.val, ONESHOT_START);
+                        }
+                    } else {
+                        add_mods(get_oneshot_locked_mods());
+                        if (tap_count >= ONESHOT_TAP_TOGGLE) {
+                            reset_oneshot_layer();
+                            clear_oneshot_locked_mods();
+                            set_oneshot_layer(action.layer_tap.val, ONESHOT_TOGGLED);
+                        } else {
+                            clear_oneshot_layer_state(ONESHOT_PRESSED);
+                        }
+                    }
+                #else
+                    if (event.pressed) {
+                        layer_on(action.layer_tap.val);
+                        set_oneshot_layer(action.layer_tap.val, ONESHOT_START);
+                    } else {
+                        clear_oneshot_layer_state(ONESHOT_PRESSED);
+                        if (tap_count > 1) {
+                            clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+                        }
+                    }
+                #endif
+                    break;
+            #endif
                 default:
                     /* tap key */
                     if (event.pressed) {
@@ -287,6 +467,9 @@ void process_action(keyrecord_t *record)
                     } else {
                         if (tap_count > 0) {
                             dprint("KEYMAP_TAP_KEY: Tap: unregister_code\n");
+                            if (action.layer_tap.code == KC_CAPS) {
+                                wait_ms(80);
+                            }
                             unregister_code(action.layer_tap.code);
                         } else {
                             dprint("KEYMAP_TAP_KEY: No tap: Off on release\n");
@@ -329,6 +512,54 @@ void process_action(keyrecord_t *record)
 #endif
         case ACT_COMMAND:
             break;
+#ifdef ONEHAND_ENABLE
+        case ACT_SWAP_HANDS:
+            switch (action.swap.code) {
+                case OP_SH_TOGGLE:
+                    if (event.pressed) {
+                        swap_hands = !swap_hands;
+                    }
+                    break;
+                case OP_SH_ON_OFF:
+                    swap_hands = event.pressed;
+                    break;
+                case OP_SH_OFF_ON:
+                    swap_hands = !event.pressed;
+                    break;
+                case OP_SH_ON:
+                    if (!event.pressed) {
+                        swap_hands = true;
+                    }
+                    break;
+                case OP_SH_OFF:
+                    if (!event.pressed) {
+                        swap_hands = false;
+                    }
+                    break;
+    #ifndef NO_ACTION_TAPPING
+                case OP_SH_TAP_TOGGLE:
+                    /* tap toggle */
+                    if (tap_count > 0) {
+                        if (!event.pressed) {
+                            swap_hands = !swap_hands;
+                        }
+                    } else {
+                        swap_hands = event.pressed;
+                    }
+                    break;
+                default:
+                    if (tap_count > 0) {
+                        if (event.pressed) {
+                            register_code(action.swap.code);
+                        } else {
+                            unregister_code(action.swap.code);
+                        }
+                    } else {
+                        swap_hands = event.pressed;
+                    }
+    #endif
+            }
+#endif
 #ifndef NO_ACTION_FUNCTION
         case ACT_FUNCTION:
             action_function(record, action.func.id, action.func.opt);
@@ -337,6 +568,33 @@ void process_action(keyrecord_t *record)
         default:
             break;
     }
+
+#ifndef NO_ACTION_LAYER
+    // if this event is a layer action, update the leds
+    switch (action.kind.id) {
+        case ACT_LAYER:
+        #ifndef NO_ACTION_TAPPING
+        case ACT_LAYER_TAP:
+        case ACT_LAYER_TAP_EXT:
+        #endif
+            led_set(host_keyboard_leds());
+            break;
+        default:
+            break;
+    }
+#endif
+
+#ifndef NO_ACTION_ONESHOT
+    /* Because we switch layers after a oneshot event, we need to release the
+     * key before we leave the layer or no key up event will be generated.
+     */
+    if (do_release_oneshot && !(get_oneshot_layer_state() & ONESHOT_PRESSED )   ) {
+        record->event.pressed = false;
+        layer_on(get_oneshot_layer());
+        process_record(record);
+        layer_off(get_oneshot_layer());
+    }
+#endif
 }
 
 
@@ -500,6 +758,7 @@ void clear_keyboard(void)
 void clear_keyboard_but_mods(void)
 {
     clear_weak_mods();
+    clear_macro_mods();
     clear_keys();
     send_keyboard_report();
 #ifdef MOUSEKEY_ENABLE
@@ -524,6 +783,14 @@ bool is_tap_key(keypos_t key)
             switch (action.layer_tap.code) {
                 case 0x00 ... 0xdf:
                 case OP_TAP_TOGGLE:
+                case OP_ONESHOT:
+                    return true;
+            }
+            return false;
+        case ACT_SWAP_HANDS:
+            switch (action.swap.code) {
+                case 0x00 ... 0xdf:
+                case OP_SH_TAP_TOGGLE:
                     return true;
             }
             return false;
@@ -567,6 +834,7 @@ void debug_action(action_t action)
         case ACT_MACRO:             dprint("ACT_MACRO");             break;
         case ACT_COMMAND:           dprint("ACT_COMMAND");           break;
         case ACT_FUNCTION:          dprint("ACT_FUNCTION");          break;
+        case ACT_SWAP_HANDS:        dprint("ACT_SWAP_HANDS");        break;
         default:                    dprint("UNKNOWN");               break;
     }
     dprintf("[%X:%02X]", action.kind.param>>8, action.kind.param&0xff);
