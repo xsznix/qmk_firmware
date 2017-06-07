@@ -1,6 +1,8 @@
 #include "ergodox.h"
 #include "debug.h"
 #include "action_layer.h"
+#include "sendchar.h"
+#include "virtser.h"
 #include "version.h"
 
 // Comment out the below line to use OS X-style modifiers.
@@ -14,6 +16,7 @@
 #define MEDIA     4
 #define SLATE     5
 #define SPECIAL   6
+#define PLOVER    7
 #else
 #define LINUX_MOD 0
 #define DVORAK    1
@@ -22,6 +25,7 @@
 #define MEDIA_LIN 4
 #define SLATE     5
 #define SPECIAL   6
+#define PLOVER    7
 #endif
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -57,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,             KC_J,       KC_C,       KC_Y,  KC_F,   KC_K,   KC_LALT,
         KC_ESC,             KC_R,       KC_S,       KC_T,  KC_H,   KC_D,
         KC_LSFT,            KC_SLSH,    KC_V,       KC_G,  KC_P,   KC_B,   KC_LGUI,
-        LALT(LSFT(KC_SPC)), TG(DVORAK), LALT(KC_TAB), KC_DOWN, KC_UP,
+        LALT(LSFT(KC_SPC)), TG(PLOVER), LALT(KC_TAB), KC_DOWN, KC_UP,
                                         MO(NUMPAD), MO(MEDIA),
                                                     MO(SLATE),
                                     KC_E,  KC_BSPC, MO(SPECIAL),
@@ -400,6 +404,76 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
+// TxBolt Codes
+#define Sl 0b00000001
+#define Tl 0b00000010
+#define Kl 0b00000100
+#define Pl 0b00001000
+#define Wl 0b00010000
+#define Hl 0b00100000
+#define Rl 0b01000001
+#define Al 0b01000010
+#define Ol 0b01000100
+#define X  0b01001000
+#define Er 0b01010000
+#define Ur 0b01100000
+#define Fr 0b10000001
+#define Rr 0b10000010
+#define Pr 0b10000100
+#define Br 0b10001000
+#define Lr 0b10010000
+#define Gr 0b10100000
+#define Tr 0b11000001
+#define Sr 0b11000010
+#define Dr 0b11000100
+#define Zr 0b11001000
+#define NM 0b11010000
+#define GRPMASK 0b11000000
+#define GRP0 0b00000000
+#define GRP1 0b01000000
+#define GRP2 0b10000000
+#define GRP3 0b11000000
+/* Keymap 7: TxBolt (Serial)
+ *
+ * ,--------------------------------------------------.           ,--------------------------------------------------.
+ * | BKSPC  |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+ * |        |   #  |   #  |   #  |   #  |   #  |      |           |      |   #  |   #  |   #  |   #  |   #  |   #    |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |   S  |   T  |   P  |   H  |   *  |------|           |------|   *  |   F  |   P  |   L  |   T  |   D    |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |   S  |   K  |   W  |   R  |   *  |      |           |      |   *  |   R  |   B  |   G  |   S  |   Z    |
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+ *   |      |      |      |      |      |                                       |      |      |      |      |      |
+ *   `----------------------------------'                                       `----------------------------------'
+ *                                        ,-------------.       ,-------------.
+ *                                        |      |      |       |      |      |
+ *                                 ,------|------|------|       |------+------+------.
+ *                                 |      |      |      |       |      |      |      |
+ *                                 |   A  |   O  |------|       |------|   E  |   U  |
+ *                                 |      |      |      |       |      |      |      |
+ *                                 `--------------------'       `--------------------'
+ */
+// TxBolt over Serial
+[PLOVER] = KEYMAP(
+       KC_NO,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,  
+       LALT(KC_BSPC),    M(NM),   M(NM),   M(NM),   M(NM),   M(NM),  KC_NO,  
+       KC_BSPC, M(Sl),   M(Tl),   M(Pl),   M(Hl),   M(X),
+       KC_NO,    M(Sl),   M(Kl),   M(Wl),   M(Rl),   M(X),   KC_NO,
+       KC_NO,    TG(PLOVER),   KC_NO,   KC_NO,   KC_NO,
+                                           KC_NO,   KC_NO,  
+                                                    KC_NO,  
+                                  M(Al),   M(Ol),   KC_NO,  
+    // right hand
+       KC_NO,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,  
+       KC_TRNS,  M(NM),   M(NM),   M(NM),   M(NM),   M(NM),   M(NM),
+                 M(X),    M(Fr),   M(Pr),   M(Lr),   M(Tr),   M(Dr),
+       KC_NO,    M(X),    M(Rr),   M(Br),   M(Gr),   M(Sr),   M(Zr),
+                          KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,  
+       KC_NO,   KC_NO,  
+       KC_NO,  
+       KC_NO,   M(Er),   M(Ur)
+),
 /* Keymap X: Template
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
@@ -446,19 +520,45 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM fn_actions[] = {
 };
 
+uint8_t chord[4] = {0,0,0,0};
+uint8_t pressed_count = 0;
+
+void send_chord(void)
+{
+  for(uint8_t i = 0; i < 4; i++)
+  {
+    if(chord[i])
+      virtser_send(chord[i]);
+  }
+  virtser_send(0);
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record)
+{
+  // We need to track keypresses in all modes, in case the user
+  // changes mode whilst pressing other keys.
+  if (record->event.pressed)
+    pressed_count++;
+  else
+    pressed_count--;
+  return true;
+}
+
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
   // MACRODOWN only works in this function
-      switch(id) {
-        case 0:
-        if (record->event.pressed) {
-          register_code(KC_RSFT);
-        } else {
-          unregister_code(KC_RSFT);
-        }
-        break;
-      }
-    return MACRO_NONE;
+
+  if (record->event.pressed) {
+    uint8_t grp = (id & GRPMASK) >> 6;
+    chord[grp] |= id;
+  }
+  else {
+    if (pressed_count == 0) {
+      send_chord();
+      chord[0] = chord[1] = chord[2] = chord[3] = 0;
+    }
+  }
+  return MACRO_NONE;
 };
 
 // Runs just one time when the keyboard initializes.
