@@ -234,8 +234,8 @@ void rgblight_mode(uint8_t mode) {
   rgblight_sethsv(rgblight_config.hue, rgblight_config.sat, rgblight_config.val);
 }
 
-void rgblight_toggle(void) {
-  rgblight_config.enable ^= 1;
+void rgblight_set_enabled(bool enabled) {
+  rgblight_config.enable = enabled;
   eeconfig_update_rgblight(rgblight_config.raw);
   xprintf("rgblight toggle: rgblight_config.enable = %u\n", rgblight_config.enable);
   if (rgblight_config.enable) {
@@ -244,9 +244,13 @@ void rgblight_toggle(void) {
     #ifdef RGBLIGHT_ANIMATIONS
       rgblight_timer_disable();
     #endif
-    _delay_ms(50);
+    // _delay_ms(50);
     rgblight_set();
   }
+}
+
+void rgblight_toggle(void) {
+  rgblight_set_enabled(!rgblight_config.enable);
 }
 
 void rgblight_enable(void) {

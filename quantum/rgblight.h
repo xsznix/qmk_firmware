@@ -86,6 +86,7 @@ void rgblight_init(void);
 void rgblight_increase(void);
 void rgblight_decrease(void);
 void rgblight_toggle(void);
+void rgblight_set_enabled(bool enabled);
 void rgblight_enable(void);
 void rgblight_step(void);
 void rgblight_step_reverse(void);
