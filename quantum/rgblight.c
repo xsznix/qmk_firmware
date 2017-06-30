@@ -126,7 +126,7 @@ void eeconfig_debug_rgblight(void) {
 }
 
 void rgblight_init(void) {
-  debug_enable = 1; // Debug ON!
+  debug_enable = 0; // might make things a tad faster?
   dprintf("rgblight_init called.\n");
   rgblight_inited = 1;
   dprintf("rgblight_init start!\n");

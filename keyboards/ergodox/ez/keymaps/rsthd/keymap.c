@@ -537,15 +537,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
   // We need to track keypresses in all modes, in case the user
   // changes mode whilst pressing other keys.
-  if (record->event.pressed)
+  if (record->event.pressed) {
     pressed_count++;
-  else
-    pressed_count--;
-
-  if (pressed_count > 0) {
     rgblight_set_enabled(true);
-    rgblight_sethsv(TCNT1 % 256, 255, 255);
-  } else {
+    rgblight_sethsv(TCNT1 % 256, 255, 80);
+  } else if (--pressed_count == 0) {
     rgblight_set_enabled(false);
   }
   return true;
