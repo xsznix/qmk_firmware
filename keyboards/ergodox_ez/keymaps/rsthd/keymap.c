@@ -1,4 +1,4 @@
-#include "ergodox.h"
+#include QMK_KEYBOARD_H
 #include "debug.h"
 #include "action_layer.h"
 #include "sendchar.h"
@@ -540,7 +540,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
   if (record->event.pressed) {
     pressed_count++;
     rgblight_set_enabled(true);
-    rgblight_sethsv(TCNT1 % 256, 255, 80);
+    rgblight_sethsv(TCNT1 % 256, 255, 255);
   } else if (--pressed_count == 0) {
     rgblight_set_enabled(false);
   }
