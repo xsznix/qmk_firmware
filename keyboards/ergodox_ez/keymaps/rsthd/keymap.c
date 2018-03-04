@@ -5,32 +5,21 @@
 #include "virtser.h"
 #include "version.h"
 
-// Comment out the below line to use OS X-style modifiers.
-// #define USE_LINUX_MODIFIERS
-
-#ifndef USE_LINUX_MODIFIERS
 #define RSTHD     0
-#define DVORAK    1
-#define QWERTY    2
-#define NUMPAD    3
-#define MEDIA     4
-#define SLATE     5
-#define SPECIAL   6
-#define PLOVER    7
-#else
-#define LINUX_MOD 0
-#define DVORAK    1
-#define QWERTY    2
-#define NUMPAD    3
-#define MEDIA_LIN 4
-#define SLATE     5
-#define SPECIAL   6
-#define PLOVER    7
-#endif
+#define LINUX_MOD 1
+#define DVORAK    2
+#define QWERTY    3
+#define NUMPAD    4
+#define MEDIA     5
+#define MEDIA_LIN 6
+#define SPECIAL   7
+#define PLOVER    8
+
+enum custom_keycodes {
+  KC_CUSTOM_RGB_TOGG = SAFE_RANGE,
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
-#ifndef USE_LINUX_MODIFIERS
 
 /* Keymap 0: RSTHD, with OS X-style modifiers
  *
@@ -63,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT,            KC_SLSH,    KC_V,       KC_G,  KC_P,   KC_B,   KC_LGUI,
         LALT(LSFT(KC_SPC)), TG(PLOVER), LALT(KC_TAB), KC_DOWN, KC_UP,
                                         MO(NUMPAD), MO(MEDIA),
-                                                    MO(SLATE),
+                                                    KC_CUSTOM_RGB_TOGG,
                                     KC_E,  KC_BSPC, MO(SPECIAL),
         // right hand
         KC_RCTL, KC_6,   KC_1,    KC_2,     KC_3,      KC_4,       KC_BSLS,
@@ -72,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_RGUI, KC_X,   KC_W,    KC_DOT,   KC_SCOLON, KC_MINS,    KC_RSFT,
                        KC_LEFT, KC_RIGHT, LALT(KC_SPC), TG(QWERTY), LCTL(KC_SPC),
         MO(MEDIA),   MO(NUMPAD),
-        MO(SLATE),
+        TG(LINUX_MOD),
         MO(SPECIAL), KC_ENT, KC_SPC
     ),
 /* Keymap 0: RSTHD, with Linux-style modifiers
@@ -97,32 +86,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                `---------------------'       `----------------------'
  */
 
-#else // #ifndef USE_LINUX_MODIFIERS
-
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
 // Otherwise, it needs KC_*
 [LINUX_MOD] = KEYMAP(  // layer 1: alternate default
         // left hand
-        KC_GRV,     KC_7,       KC_8,    KC_9,  KC_0,   KC_5,   KC_LGUI,
-        KC_TAB,     KC_J,       KC_C,    KC_Y,  KC_F,   KC_K,   KC_LALT,
-        KC_ESC,     KC_R,       KC_S,    KC_T,  KC_H,   KC_D,
-        KC_LSFT,    KC_SLSH,    KC_V,    KC_G,  KC_P,   KC_B,   KC_LCTL,
-        LCTL(KC_K), TG(DVORAK), LCTL(KC_B), KC_DOWN, KC_UP,
-                                        MO(NUMPAD), MO(MEDIA_LIN),
-                                                    MO(SLATE),
-                                    KC_E,  KC_BSPC, MO(SPECIAL),
+        KC_TRNS,    KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LGUI,
+        KC_TRNS,    KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+        KC_TRNS,    KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+        KC_TRNS,    KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LCTL,
+        LCTL(KC_K), TG(DVORAK), LCTL(KC_B), KC_TRNS, KC_TRNS,
+                                           KC_TRNS, MO(MEDIA_LIN),
+                                                    KC_TRNS,
+                                 KC_TRNS,  KC_TRNS, KC_TRNS,
         // right hand
-        KC_RGUI, KC_6,   KC_1,    KC_2,     KC_3,      KC_4,       KC_BSLS,
-        KC_LALT, KC_Z,   KC_L,    KC_COMM,  KC_U,      KC_Q,       KC_EQUAL,
-                 KC_M,   KC_N,    KC_A,     KC_I,      KC_O,       KC_QUOTE,
-        KC_RCTL, KC_X,   KC_W,    KC_DOT,   KC_SCOLON, KC_MINS,    KC_RSFT,
-                       KC_LEFT, KC_RIGHT, LCTL(KC_W),   TG(QWERTY), KC_RALT,
-        MO(MEDIA_LIN), MO(NUMPAD),
-        MO(SLATE),
-        MO(SPECIAL),   KC_ENT, KC_SPC
+        KC_RGUI, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+        KC_LALT, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+                 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+        KC_RCTL, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+                 KC_TRNS, KC_TRNS, LCTL(KC_W), TG(QWERTY), KC_RALT,
+        MO(MEDIA_LIN), KC_TRNS,
+        KC_TRNS,
+        KC_TRNS, KC_TRNS, KC_TRNS
     ),
-
-#endif // #ifndef USE_LINUX_MODIFIERS
 
 /* Keymap 1: Dvorak
  *
@@ -248,8 +233,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_KP_ENTER, KC_TRNS
     ),
 
-#ifndef USE_LINUX_MODIFIERS
-
 /* Keymap 4: Media
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
@@ -292,8 +275,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
 
-#else // #ifndef USE_LINUX_MODIFIERS
-
 /* Keymap 4: Media, with Linux-style modifiers for ^z, ^x, ^c, ^v
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
@@ -331,34 +312,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 KC_TRNS, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, KC_TRNS, KC_TRNS,
                          KC_MPRV, KC_MPLY, KC_MNXT, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-
-#endif // #ifndef USE_LINUX_MODIFIERS
-
-/* Keymap 5: Slate
- *
- * This is a magical layer. Its significance is unknown to those who do not know
- * the ways of the Dark Side.
- */
-[SLATE] = KEYMAP(
-       // left hand
-       LGUI(KC_F13), KC_TRNS,     KC_TRNS,     KC_TRNS,      KC_TRNS,     KC_TRNS,     KC_TRNS,
-       LGUI(KC_F1),  LGUI(KC_F2), LGUI(KC_F3), LGUI(KC_F10), LCTL(KC_F1), LCTL(KC_F2), KC_TRNS,
-       LGUI(KC_F7),  LGUI(KC_F8), LGUI(KC_F9), LGUI(KC_F12), LCTL(KC_F5), LCTL(KC_F6),
-       LGUI(KC_F4),  LGUI(KC_F5), LGUI(KC_F6), LGUI(KC_F11), LCTL(KC_F3), LCTL(KC_F4), KC_TRNS,
-       KC_TRNS,      KC_TRNS,     KC_TRNS,     KC_TRNS,      KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, LCTL(LGUI(KC_F1)), LCTL(LGUI(KC_F2)),  LCTL(LGUI(KC_F3)),  LCTL(LGUI(KC_F4)),  LCTL(KC_F7), LCTL(KC_F10),
-                LCTL(LGUI(KC_F9)), LCTL(LGUI(KC_F10)), LCTL(LGUI(KC_F11)), LCTL(LGUI(KC_F12)), LCTL(KC_F9), LCTL(KC_F12),
-       KC_TRNS, LCTL(LGUI(KC_F5)), LCTL(LGUI(KC_F6)),  LCTL(LGUI(KC_F7)),  LCTL(LGUI(KC_F8)),  LCTL(KC_F8), LCTL(KC_F11),
-                                   KC_TRNS,            KC_TRNS,            KC_TRNS,            KC_TRNS,     KC_TRNS,
        KC_TRNS, KC_TRNS,
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
@@ -539,10 +492,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
   // changes mode whilst pressing other keys.
   if (record->event.pressed) {
     pressed_count++;
-    rgblight_set_enabled(true);
-    rgblight_sethsv(TCNT1 % 256, 255, 255);
+    if (keycode == KC_CUSTOM_RGB_TOGG) {
+      rgblight_toggle();
+    }
   } else if (--pressed_count == 0) {
-    rgblight_set_enabled(false);
   }
   return true;
 }
@@ -566,7 +519,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
-
+  rgblight_set_enabled(true);
+  rgblight_sethsv(0, 255, 255);
 };
 
 // Runs constantly in the background, in a loop.
@@ -579,11 +533,11 @@ void matrix_scan_user(void) {
     ergodox_right_led_3_off();
 
     switch (layer) {
-#ifndef USE_LINUX_MODIFIERS
       case RSTHD:
-#else
+      break;
+
       case LINUX_MOD:
-#endif
+      ergodox_right_led_3_on();
       break;
 
       case DVORAK:
