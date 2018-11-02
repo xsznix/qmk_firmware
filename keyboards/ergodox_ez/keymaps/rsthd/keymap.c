@@ -1,8 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "debug.h"
 #include "action_layer.h"
-#include "sendchar.h"
-#include "virtser.h"
 #include "version.h"
 
 #define RSTHD_OSX 0
@@ -16,7 +14,7 @@
 #define MACRO_WIN 8
 
 enum custom_keycodes {
-  KC_CUSTOM_RGB_TOGG = SAFE_RANGE,
+  KC_TGRGB = SAFE_RANGE,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -44,15 +42,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
 // Otherwise, it needs KC_*
-[RSTHD_OSX] = KEYMAP(
+[RSTHD_OSX] = LAYOUT_ergodox(
         // left hand
         KC_GRV,  KC_7,    KC_8, KC_9, KC_0, KC_5, KC_LCTL,
         KC_TAB,  KC_J,    KC_C, KC_Y, KC_F, KC_K, KC_LALT,
         KC_ESC,  KC_R,    KC_S,  KC_T, KC_H, KC_D,
         KC_LSFT, KC_SLSH, KC_V,  KC_G, KC_P, KC_B, KC_LGUI,
-        MO(MACRO_OSX), LALT(LSFT(KC_SPC)), LALT(KC_TAB), KC_DOWN, KC_UP,
+        MO(MACRO_OSX), KC_BTN1, KC_BTN2, KC_DOWN, KC_UP,
                                         MO(NUMPAD), MO(MEDIA_OSX),
-                                                    KC_CUSTOM_RGB_TOGG,
+                                                    TG(RSTHD_WIN),
                                     KC_E,  KC_BSPC, MO(SPECIAL),
         // right hand
         KC_RCTL, KC_6, KC_1, KC_2,    KC_3,      KC_4,    KC_BSLS,
@@ -61,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_RGUI, KC_X, KC_W, KC_DOT,  KC_SCOLON, KC_MINS, KC_RSFT,
                        KC_LEFT, KC_RIGHT, LALT(KC_SPC), TG(QWERTY), LCTL(KC_SPC),
         MO(MEDIA_OSX),   MO(NUMPAD),
-        TG(RSTHD_WIN),
+        KC_TGRGB,
         MO(SPECIAL), KC_ENT, KC_SPC
     ),
 
@@ -87,13 +85,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                `---------------------'       `----------------------'
  */
 
-[RSTHD_WIN] = KEYMAP(
+[RSTHD_WIN] = LAYOUT_ergodox(
         // left hand
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LGUI,
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LCTL,
-        MO(MACRO_WIN), KC_BTN1, KC_BTN2, KC_TRNS, KC_TRNS,
+        MO(MACRO_WIN), KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                                            KC_TRNS, MO(MEDIA_WIN),
                                                     KC_TRNS,
                                  KC_TRNS,  KC_TRNS, KC_TRNS,
@@ -129,7 +127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[QWERTY] = KEYMAP(
+[QWERTY] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_1,    KC_2,    KC_3,    KC_4,    KC_5, KC_TRNS,
        KC_TRNS, KC_Q,    KC_W,    KC_E,    KC_R,    KC_T, KC_TRNS,
@@ -170,7 +168,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[NUMPAD] = KEYMAP(
+[NUMPAD] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_F13,  KC_F14,  KC_F15,  KC_F16,  KC_TRNS, KC_TRNS,
        KC_TRNS, KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_TRNS, KC_TRNS,
@@ -212,7 +210,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[MEDIA_OSX] = KEYMAP(
+[MEDIA_OSX] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
        KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
@@ -254,7 +252,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[MEDIA_WIN] = KEYMAP(
+[MEDIA_WIN] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
        KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
@@ -295,7 +293,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[SPECIAL] = KEYMAP(
+[SPECIAL] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS,    KC_TRNS,   KC_TRNS, KC_TRNS,    KC_TRNS,       KC_TRNS,
        KC_TRNS, S(KC_COMM), S(KC_DOT), KC_LBRC, KC_RBRC,    LALT(KC_BSPC), KC_TRNS,
@@ -337,16 +335,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[MACRO_OSX] = KEYMAP(
+[MACRO_OSX] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, LALT(KC_LEFT), LALT(KC_RIGHT), LALT(LGUI(KC_LEFT)), LALT(LGUI(KC_RIGHT)), KC_TRNS,
-       KC_TRNS, LCTL(LALT(KC_LEFT)), LCTL(LALT(KC_RIGHT)), LCTL(KC_UP), LCTL(KC_DOWN), KC_TRNS, KC_TRNS,
-       KC_TRNS, LCTL(LSFT(KC_TAB)), LCTL(KC_TAB), LGUI(KC_LEFT), LGUI(KC_RIGHT),
+       KC_TRNS, LCTL(LALT(KC_LEFT)), LCTL(LALT(KC_RIGHT)), LALT(LGUI(KC_LEFT)), LALT(LGUI(KC_RIGHT)), KC_TRNS,
+       KC_TRNS, LCTL(LSFT(KC_TAB)), LCTL(KC_TAB), LCTL(KC_UP), LCTL(KC_DOWN), KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_BTN3, LALT(KC_TAB), LGUI(KC_LEFT), LGUI(KC_RIGHT),
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
+                    LCTL(LALT(KC_SPC)), KC_TRNS, KC_TRNS,
        // right hand
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
@@ -379,13 +377,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[MACRO_WIN] = KEYMAP(
+[MACRO_WIN] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, LCTL(LGUI(KC_LEFT)), LCTL(LGUI(KC_RIGHT)), LGUI(KC_TAB), LCTL(LGUI(KC_D)), LGUI(KC_L), KC_TRNS,
-       KC_TRNS, LCTL(LSFT(KC_TAB)), LCTL(KC_TAB), LCTL(KC_LEFT), LCTL(KC_RIGHT),
+       KC_TRNS, LCTL(LGUI(KC_LEFT)), LCTL(LGUI(KC_RIGHT)), KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, LCTL(LSFT(KC_TAB)), LCTL(KC_TAB), LGUI(KC_TAB), LCTL(LGUI(KC_D)), LGUI(KC_L), KC_TRNS,
+       KC_TRNS, KC_BTN3, KC_BTN3, LALT(KC_LEFT), LALT(KC_RIGHT),
                                         KC_TRNS, KC_TRNS,
                                                  KC_TRNS,
                                KC_TRNS, KC_TRNS, KC_TRNS,
@@ -421,7 +419,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-// [NAME] = KEYMAP(
+// [NAME] = LAYOUT_ergodox(
 //        // left hand
 //        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
 //        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
@@ -449,7 +447,7 @@ const uint16_t PROGMEM fn_actions[] = {
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
   if (record->event.pressed) {
-    if (keycode == KC_CUSTOM_RGB_TOGG) {
+    if (keycode == KC_TGRGB) {
       rgblight_toggle();
     }
   }
@@ -463,7 +461,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
-  rgblight_set_enabled(true);
+  rgblight_enable();
   rgblight_effect_rainbow_swirl(10);
 };
 

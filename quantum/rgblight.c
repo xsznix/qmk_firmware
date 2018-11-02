@@ -288,10 +288,6 @@ void rgblight_toggle_noeeprom(void) {
   }
 }
 
-void rgblight_toggle(void) {
-  rgblight_set_enabled(!rgblight_config.enable);
-}
-
 void rgblight_enable(void) {
   rgblight_config.enable = 1;
   // No need to update EEPROM here. rgblight_mode() will do that, actually
