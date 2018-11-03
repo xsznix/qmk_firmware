@@ -461,8 +461,11 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
+  rgblight_init();
+  rgblight_timer_init();
   rgblight_enable();
-  rgblight_effect_rainbow_swirl(10);
+  rgblight_set_hsv(0, 255, 255);
+  rgblight_set_mode(RGBLIGHT_MODE_RAINBOW_SWIRL);
 };
 
 // Runs constantly in the background, in a loop.
