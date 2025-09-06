@@ -8,9 +8,9 @@
 #define LMODS       1
 #define RMODS       2
 #define NUMPAD      3
-#define MEDIA_OSX   4
-#define P9K_SYM     5
-#define MACRO_OSX   6
+#define MEDIA       4
+#define SYMBOLS     5
+#define MACRO       6
 
 // macros
 #define KC_LMODS LM(LMODS, MOD_LSFT)
@@ -22,18 +22,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * | Esc    |  7   |  8   |  9   |  0   |  5   |M-Bksp|           |M-Del |  6   |  1   |  2   |  3   |  4   |  \     |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * | Tab    |  J   |  B   |  G   |  V   |  X   | Alt  |           | Alt  |  '   |  W   |  O   |  U   |  ,   | Bksp   |
+ * | Tab    |  J   |  B   |  G   |  V   |  X   |Media |           |Media |  '   |  W   |  O   |  U   |  ,   | Bksp   |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * | Q      |  H   |  N   |  S   |  T   |  M   |------|           |------|Magic |SkpMgc|  A   |  E   |  I   |  -     |
- * |--------+------+------+------+------+------| Cmd  |           | Cmd  |------+------+------+------+------+--------|
+ * |--------+------+------+------+------+------| Num  |           | Num  |------+------+------+------+------+--------|
  * | LShift |  Y   |  P   |  F   |  D   |  K   |      |           |      |  Z   |  C   |  /   |  ;   |  .   | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
  *   | Macro|  M1  |  M2  | Down |  Up  |                                       | Left | Right|  [   |  ]   |  =   |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
- *                                        | Ctrl | Num  |       |Media | Ctrl |
+ *                                        | Del  | Home |       | PgUp | Ins  |
  *                                 ,------|------|------|       |------+------+------.
- *                                 |      |      | P9K  |       |QWERTY|      |      |
+ *                                 |      |      | End  |       | PgDn |      |      |
  *                                 |  R   |  L   |------|       |------|Enter | Spc  |
  *                                 |      |      | Sym  |       | Sym  |      |      |
  *                                 `--------------------'       `--------------------'
@@ -41,22 +41,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [AFTERBURNER] = LAYOUT_ergodox(
        // left hand
        KC_ESC,        KC_7,    KC_8,    KC_9,    KC_0,    KC_5,    LALT(KC_BSPC),
-       KC_TAB,        KC_J,    KC_B,    KC_G,    KC_V,    KC_X,    KC_LALT,
+       KC_TAB,        KC_J,    KC_B,    KC_G,    KC_V,    KC_X,    MO(MEDIA),
        KC_Q,          KC_H,    KC_N,    KC_S,    KC_T,    KC_M,
-       KC_LMODS,      KC_Y,    KC_P,    KC_F,    KC_D,    KC_K,    KC_LGUI,
-       MO(MACRO_OSX), KC_BTN1, KC_BTN2, KC_DOWN, KC_UP,
-                                        KC_LCTL, MO(MEDIA_OSX),
-                                                 MO(NUMPAD),
-                                  KC_R, KC_L,    MO(P9K_SYM),
+       KC_LMODS,      KC_Y,    KC_P,    KC_F,    KC_D,    KC_K,    MO(NUMPAD),
+       MO(MACRO), KC_BTN1, KC_BTN2, KC_DOWN, KC_UP,
+                                        KC_DEL,  KC_HOME,
+                                                 KC_END,
+                                  KC_R, KC_L,    MO(SYMBOLS),
        // right hand
-  LALT(KC_DEL), KC_6,    KC_1,    KC_2,    KC_3,    KC_4,    KC_BSLS,
-       KC_RALT, KC_QUOT, KC_W,    KC_O,    KC_U,    KC_COMM, KC_BSPC,
-                QK_AREP, QK_SREP, KC_A,    KC_E,    KC_I,    KC_MINS,
-       KC_RGUI, KC_Z,    KC_C,    KC_SLSH, KC_SCLN, KC_DOT,  KC_RMODS,
-                         KC_LEFT, KC_RIGHT,KC_LBRC, KC_RBRC, KC_EQL,
-       MO(MEDIA_OSX), KC_RCTL,
-       MO(NUMPAD),
-       MO(P9K_SYM), KC_ENT, KC_SPC
+       LALT(KC_DEL),  KC_6,    KC_1,    KC_2,    KC_3,    KC_4,    KC_BSLS,
+       MO(MEDIA), KC_QUOT, KC_W,    KC_O,    KC_U,    KC_COMM, KC_BSPC,
+                      QK_AREP, QK_SREP, KC_A,    KC_E,    KC_I,    KC_MINS,
+       MO(NUMPAD),    KC_Z,    KC_C,    KC_SLSH, KC_SCLN, KC_DOT,  KC_RMODS,
+                               KC_LEFT, KC_RIGHT,KC_LBRC, KC_RBRC, KC_EQL,
+       KC_PGUP, KC_INS,
+       KC_PGDN,
+       MO(SYMBOLS),   KC_ENT, KC_SPC
     ),
 
 /* Left modifiers
@@ -101,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
 
-/* Template
+/* Right modifiers
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
@@ -206,7 +206,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[MEDIA_OSX] = LAYOUT_ergodox(
+[MEDIA] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,            KC_TRNS,
        KC_TRNS, KC_TRNS,    KC_INS,     KC_HOME,    KC_PGUP,    LCTL(LSFT(KC_TAB)), KC_TRNS,
@@ -227,7 +227,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
 
-/* Paracetamak Symbols
+/* Afterburner Symbols
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
@@ -248,7 +248,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[P9K_SYM] = LAYOUT_ergodox(
+[SYMBOLS] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_LABK, KC_RABK, KC_LCBR, KC_RCBR, KC_BSLS, KC_TRNS,
@@ -290,7 +290,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 |      |      |      |       |      |      |      |
  *                                 `--------------------'       `--------------------'
  */
-[MACRO_OSX] = LAYOUT_ergodox(
+[MACRO] = LAYOUT_ergodox(
        // left hand
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
