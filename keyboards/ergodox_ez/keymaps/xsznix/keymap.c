@@ -541,7 +541,13 @@ uint16_t get_skip_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
-  return true;
+    return true;
+}
+
+bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
+                            uint8_t* remembered_mods) {
+    if (IS_QK_LAYER_MOD(keycode)) return false;
+    return true;
 }
 
 // Runs just one time when the keyboard initializes.
