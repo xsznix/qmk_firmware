@@ -1,3 +1,4 @@
+#include "config.h"
 #include QMK_KEYBOARD_H
 #include "debug.h"
 #include "action_layer.h"
@@ -9,30 +10,24 @@
 #define MACRO       2
 #define FUNCT       3
 #define AEROSPACE   4
-#define LMODS       5
-#define LMODS2      6
-#define LMODS3      7
-#define LMODS4      8
-#define RMODS       9
-#define RMODS2      10
-#define RMODS3      11
-#define RMODS4      12
 
 // macros
-#define KC_LMODS LM(LMODS, MOD_LSFT)
-#define KC_RMODS LM(RMODS, MOD_RSFT)
 #define KC_AERO  LM(AEROSPACE, MOD_LCTL | MOD_LALT)
+
+enum custom_keycodes {
+    KC_OU = SAFE_RANGE,
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Afterburner
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
- * | Esc    |  7   |  8   |  9   |  0   |  5   |M-Bksp|           |M-Del |  6   |  1   |  2   |  3   |  4   |  \     |
+ * | Esc    |  7   |  8   |  9   |  0   |  5   |G-Bksp|           |G-Del |  6   |  1   |  2   |  3   |  4   |  \     |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * | Tab    |  J   |  B   |  G   |  D   |  K   |Funct |           |Funct |  Z   |  C   |  O   |  U   |  ,   | Bksp   |
+ * | Tab    |  J   |  B   |  G   |  D   |  K   |M-Bksp|           |M-Del |  Z   |  C   |  O   |  U   |  ,   | Bksp   |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * | Q      |  H   |  N   |  S   |  T   |  M   |------|           |------|Magic |SkpMgc|  A   |  E   |  I   |  -     |
- * |--------+------+------+------+------+------|Symbol|           |Symbol|------+------+------+------+------+--------|
+ * |--------+------+------+------+------+------|CapsWd|           |CapsWd|------+------+------+------+------+--------|
  * | LShift |  Y   |  P   |  F   |  V   |  X   |      |           |      |  '   |  W   |  /   |  ;   |  .   | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
  *   | Macro|  M1  |  M2  | Down |  Up  |                                       | Left | Right|  [   |  ]   |  =   |
@@ -47,19 +42,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [AFTERBURNER] = LAYOUT_ergodox(
        // left hand
-       KC_ESC,        KC_7,    KC_8,    KC_9,    KC_0,    KC_5,    LALT(KC_BSPC),
-       KC_TAB,        KC_J,    KC_B,    KC_G,    KC_D,    KC_K,    MO(FUNCT),
-       KC_Q,          KC_H,    KC_N,    KC_S,    KC_T,    KC_M,
-       KC_LMODS,      KC_Y,    KC_P,    KC_F,    KC_V,    KC_X,    MO(SYMBOLS),
+       KC_ESC,  KC_7,             KC_8,             KC_9,             KC_0,             KC_5,         LGUI(KC_BSPC),
+       KC_TAB,  KC_J,             KC_B,             KC_G,             KC_D,             KC_K,         LALT(KC_BSPC),
+       KC_Q,    KC_H,             KC_N,             KC_S,             KC_T,             KC_M,
+       KC_LSFT, MT(MOD_LGUI,KC_Y),MT(MOD_LALT,KC_P),MT(MOD_LCTL,KC_F),LT(SYMBOLS,KC_V),LT(FUNCT,KC_X),CW_TOGG,
        MO(MACRO), KC_BTN1, KC_BTN2, KC_DOWN, KC_UP,
                                         KC_DEL,  KC_HOME,
                                                  KC_END,
                                   KC_R, KC_L,    KC_AERO,
        // right hand
-       LALT(KC_DEL),  KC_6,    KC_1,    KC_2,    KC_3,    KC_4,    KC_BSLS,
-       MO(FUNCT),     KC_Z,    KC_C,    KC_O,    KC_U,    KC_COMM, KC_BSPC,
-                      QK_AREP, QK_SREP, KC_A,    KC_E,    KC_I,    KC_MINS,
-       MO(SYMBOLS),   KC_QUOT, KC_W,    KC_SLSH, KC_SCLN, KC_DOT,  KC_RMODS,
+       LGUI(KC_DEL), KC_6,             KC_1,            KC_2,                KC_3,                KC_4,                KC_BSLS,
+       LALT(KC_DEL), KC_Z,             KC_C,            KC_O,                KC_U,                KC_COMM,             KC_BSPC,
+                     QK_AREP,          QK_SREP,         KC_A,                KC_E,                KC_I,                KC_MINS,
+       CW_TOGG,      LT(FUNCT,KC_QUOT),LT(SYMBOLS,KC_W),MT(MOD_RCTL,KC_SLSH),MT(MOD_RALT,KC_SCLN),MT(MOD_RGUI,KC_DOT), KC_RSFT,
                                KC_LEFT, KC_RIGHT,KC_LBRC, KC_RBRC, KC_EQL,
        KC_PGUP, KC_INS,
        KC_PGDN,
@@ -234,210 +229,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
 
-/* Left modifiers
- *
- * ,--------------------------------------------------.           ,--------------------------------------------------.
- * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
- * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |------|           |------|      |      |      |      |      |        |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        | LCmd | LAlt | LCtl | CapW |      |      |           |      |      |      |      |      |      |        |
- * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |      |      |      |                                       |      |      |      |      |      |
- *   `----------------------------------'                                       `----------------------------------'
- *                                        ,-------------.       ,-------------.
- *                                        |      |      |       |      |      |
- *                                 ,------|------|------|       |------+------+------.
- *                                 |      |      |      |       |      |      |      |
- *                                 |      |      |------|       |------|      |      |
- *                                 |      |      |      |       |      |      |      |
- *                                 `--------------------'       `--------------------'
- */
-[LMODS] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, LM(LMODS2, MOD_LGUI), LM(LMODS3, MOD_LALT), LM(LMODS4, MOD_LCTL), CW_TOGG, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-[LMODS2] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, LM(LMODS2, MOD_LGUI), LM(LMODS3, MOD_LALT), LM(LMODS4, MOD_LCTL), CW_TOGG, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-[LMODS3] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, LM(LMODS2, MOD_LGUI), LM(LMODS3, MOD_LALT), LM(LMODS4, MOD_LCTL), CW_TOGG, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-[LMODS4] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, LM(LMODS2, MOD_LGUI), LM(LMODS3, MOD_LALT), LM(LMODS4, MOD_LCTL), CW_TOGG, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-
-/* Right modifiers
- *
- * ,--------------------------------------------------.           ,--------------------------------------------------.
- * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
- * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |------|           |------|      |      |      |      |      |        |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |           |      |      | CapW | RCtl | RAlt | RCmd |        |
- * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |      |      |      |                                       |      |      |      |      |      |
- *   `----------------------------------'                                       `----------------------------------'
- *                                        ,-------------.       ,-------------.
- *                                        |      |      |       |      |      |
- *                                 ,------|------|------|       |------+------+------.
- *                                 |      |      |      |       |      |      |      |
- *                                 |      |      |------|       |------|      |      |
- *                                 |      |      |      |       |      |      |      |
- *                                 `--------------------'       `--------------------'
- */
-[RMODS] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, CW_TOGG, LM(RMODS4, MOD_RCTL), LM(RMODS3, MOD_RALT), LM(RMODS2, MOD_RGUI), KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-[RMODS2] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, CW_TOGG, LM(RMODS4, MOD_RCTL), LM(RMODS3, MOD_RALT), LM(RMODS2, MOD_RGUI), KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-[RMODS3] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, CW_TOGG, LM(RMODS4, MOD_RCTL), LM(RMODS3, MOD_RALT), LM(RMODS2, MOD_RGUI), KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-[RMODS4] = LAYOUT_ergodox(
-       // left hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                                        KC_TRNS, KC_TRNS,
-                                                 KC_TRNS,
-                               KC_TRNS, KC_TRNS, KC_TRNS,
-       // right hand
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS, CW_TOGG, LM(RMODS4, MOD_RCTL), LM(RMODS3, MOD_RALT), LM(RMODS2, MOD_RGUI), KC_TRNS,
-                         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,
-       KC_TRNS,
-       KC_TRNS, KC_TRNS, KC_TRNS
-    ),
-
 /* Template
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
@@ -490,12 +281,20 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         return keycode;
     }
 
+    // Get tap keycode for tap-hold keys
+    if (IS_QK_MOD_TAP(keycode)) {
+        keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+    } else if (IS_QK_LAYER_TAP(keycode)) {
+        keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+    }
+
     // Optimal mappings:
     // PROTOC_INCLUDE='./proto/' pq --protofile proto/corpus.proto --msgtype corpus.Ngrams < corpora/reddit_small.ngrams.protobuf | jq '.bigrams | [ .[] | select(.key | test("[#]{2}")) ] | sort_by(.value)'
     switch (keycode) {
     case KC_A: return KC_O;
     case KC_G: return KC_S;
     case KC_H: return KC_Y;
+    case KC_I: return KC_OU;
     case KC_U: return KC_E;
     case KC_Y: return KC_H;
     case KC_X: return KC_T;
@@ -507,6 +306,13 @@ uint16_t get_skip_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     // Pure repeat if any modifiers besides shift
     if ((mods & (MOD_MASK_CTRL | MOD_MASK_ALT | MOD_MASK_GUI))) {
         return keycode;
+    }
+
+    // Get tap keycode for tap-hold keys
+    if (IS_QK_MOD_TAP(keycode)) {
+        keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+    } else if (IS_QK_LAYER_TAP(keycode)) {
+        keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
     }
 
     // Optimal mappings:
@@ -541,12 +347,26 @@ uint16_t get_skip_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
+    if (!record->event.pressed) return true;
+
+    switch (keycode) {
+        case KC_OU: SEND_STRING("ou"); break;
+    }
     return true;
 }
 
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
-    if (IS_QK_LAYER_MOD(keycode)) return false;
+    return true;
+}
+
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    // the layer taps on index misfire too often with permissive hold
+    if (IS_QK_LAYER_TAP(keycode)) {
+        return false;
+    }
+
+    // the mod taps are okay, though
     return true;
 }
 

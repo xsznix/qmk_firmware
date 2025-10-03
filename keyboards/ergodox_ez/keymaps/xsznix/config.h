@@ -1,1 +1,5 @@
 #pragma once
+
+#define TAPPING_TERM 180
+#define PERMISSIVE_HOLD
+#define PERMISSIVE_HOLD_PER_KEY
