@@ -6,10 +6,11 @@
 
 // layers
 #define AFTERBURNER 0
-#define SYMBOLS     1
-#define MACRO       2
-#define FUNCT       3
-#define AEROSPACE   4
+#define MONKEYTYPE  1
+#define SYMBOLS     2
+#define MACRO       3
+#define FUNCT       4
+#define AEROSPACE   5
 
 // macros
 #define KC_AERO  LM(AEROSPACE, MOD_LCTL | MOD_LALT)
@@ -55,6 +56,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        LALT(KC_DEL), KC_Z,             KC_C,            KC_O,                KC_U,                KC_COMM,             KC_BSPC,
                      QK_AREP,          QK_SREP,         KC_A,                KC_E,                KC_I,                KC_MINS,
        CW_TOGG,      LT(FUNCT,KC_QUOT),LT(SYMBOLS,KC_W),MT(MOD_RCTL,KC_SLSH),MT(MOD_RALT,KC_SCLN),MT(MOD_RGUI,KC_DOT), KC_RSFT,
+                               KC_LEFT, KC_RIGHT,KC_LBRC, KC_RBRC, KC_EQL,
+       KC_PGUP, KC_INS,
+       KC_PGDN,
+       KC_AERO, KC_ENT, KC_SPC
+    ),
+[MONKEYTYPE] = LAYOUT_ergodox(
+       // left hand
+       KC_ESC,  KC_7,             KC_8,             KC_9,             KC_0,             KC_5,         LGUI(KC_BSPC),
+       KC_TAB,  KC_J,             KC_B,             KC_G,             KC_D,             KC_K,         LALT(KC_BSPC),
+       KC_Q,    KC_H,             KC_N,             KC_S,             KC_T,             KC_M,
+       KC_LSFT, KC_Y,             KC_P,             KC_F,             KC_V,             KC_X,         CW_TOGG,
+       MO(MACRO), KC_BTN1, KC_BTN2, KC_DOWN, KC_UP,
+                                        KC_DEL,  KC_HOME,
+                                                 KC_END,
+                                  KC_R, KC_L,    KC_AERO,
+       // right hand
+       LGUI(KC_DEL), KC_6,             KC_1,            KC_2,                KC_3,                KC_4,                KC_BSLS,
+       LALT(KC_DEL), KC_Z,             KC_C,            KC_O,                KC_U,                KC_COMM,             KC_BSPC,
+                     QK_AREP,          QK_SREP,         KC_A,                KC_E,                KC_I,                KC_MINS,
+       CW_TOGG,      KC_QUOT,          KC_W,            KC_SLSH,             KC_SCLN,             KC_DOT,              KC_RSFT,
                                KC_LEFT, KC_RIGHT,KC_LBRC, KC_RBRC, KC_EQL,
        KC_PGUP, KC_INS,
        KC_PGDN,
@@ -137,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        // right hand
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                KC_TRNS, QK_BOOT, QK_RBT,  KC_TRNS, KC_TRNS, KC_TRNS,
+                KC_TRNS, QK_BOOT, QK_RBT,  DF(AFTERBURNER), DF(MONKEYTYPE), KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS,
