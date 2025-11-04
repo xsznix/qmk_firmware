@@ -1,5 +1,7 @@
 #pragma once
 
 #define TAPPING_TERM 180
-#define PERMISSIVE_HOLD
-#define PERMISSIVE_HOLD_PER_KEY
+#define CHORDAL_HOLD
+#define FLOW_TAP_TERM 100
+#define BOTH_SHIFTS_TURNS_ON_CAPS_WORD
+
