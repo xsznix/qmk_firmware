@@ -63,19 +63,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 [MONKEYTYPE] = LAYOUT_ergodox(
        // left hand
-       KC_ESC,  KC_7,             KC_8,             KC_9,             KC_0,             KC_5,         LGUI(KC_BSPC),
-       KC_TAB,  KC_J,             KC_B,             KC_G,             KC_D,             KC_K,         LALT(KC_BSPC),
+       KC_ESC,  KC_7,             KC_8,             KC_9,             KC_0,             KC_5,         LALT(KC_BSPC),
+       KC_TAB,  KC_J,             KC_B,             KC_G,             KC_D,             KC_K,         MO(FUNCT),
        KC_Q,    KC_H,             KC_N,             KC_S,             KC_T,             KC_M,
-       KC_LSFT, KC_Y,             KC_P,             KC_F,             KC_V,             KC_X,         CW_TOGG,
+       KC_LSFT, KC_Y,             KC_P,             KC_F,             KC_V,             KC_X,         MO(SYMBOLS),
        MO(MACRO), KC_BTN1, KC_BTN2, KC_DOWN, KC_UP,
                                         KC_DEL,  KC_HOME,
                                                  KC_END,
                                   KC_R, KC_L,    KC_AERO,
        // right hand
-       LGUI(KC_DEL), KC_6,             KC_1,            KC_2,                KC_3,                KC_4,                KC_BSLS,
-       LALT(KC_DEL), KC_Z,             KC_C,            KC_O,                KC_U,                KC_COMM,             KC_BSPC,
-                     QK_AREP,          QK_SREP,         KC_A,                KC_E,                KC_I,                KC_MINS,
-       CW_TOGG,      KC_QUOT,          KC_W,            KC_SLSH,             KC_SCLN,             KC_DOT,              KC_RSFT,
+       LALT(KC_DEL), KC_6,    KC_1,            KC_2,                KC_3,                KC_4,                KC_BSLS,
+       MO(FUNCT),    KC_Z,    KC_C,            KC_O,                KC_U,                KC_COMM,             KC_BSPC,
+                     QK_AREP, QK_SREP,         KC_A,                KC_E,                KC_I,                KC_MINS,
+       MO(SYMBOLS),  KC_QUOT, KC_W,            KC_SLSH,             KC_SCLN,             KC_DOT,              KC_RSFT,
                                KC_LEFT, KC_RIGHT,KC_LBRC, KC_RBRC, KC_EQL,
        KC_PGUP, KC_INS,
        KC_PGDN,
@@ -379,6 +379,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
     return true;
+}
+
+bool is_flow_tap_key(uint16_t keycode) {
+    if ((get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) != 0) {
+        return false; // Disable Flow Tap on hotkeys.
+    }
+    // Add minus to the default list
+    switch (get_tap_keycode(keycode)) {
+        case KC_SPC:
+        case KC_A ... KC_Z:
+        case KC_DOT:
+        case KC_COMM:
+        case KC_SCLN:
+        case KC_SLSH:
+        case KC_MINS:
+            return true;
+    }
+    return false;
+}
+
+bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
+                      uint16_t other_keycode, keyrecord_t* other_record) {
+    // Make shifts work better for hotkeys
+    switch (other_keycode) {
+        case KC_LSFT:
+        case KC_RSFT:
+            return true;
+    }
+
+    return get_chordal_hold_default(tap_hold_record, other_record);
 }
 
 // Runs just one time when the keyboard initializes.
