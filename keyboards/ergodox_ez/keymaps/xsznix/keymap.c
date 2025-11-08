@@ -401,10 +401,12 @@ bool is_flow_tap_key(uint16_t keycode) {
 
 bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
                       uint16_t other_keycode, keyrecord_t* other_record) {
-    // Make shifts work better for hotkeys
+    // Make shifts and MO keys work better for hotkeys
     switch (other_keycode) {
         case KC_LSFT:
         case KC_RSFT:
+        case MO(SYMBOLS):
+        case MO(FUNCT):
             return true;
     }
 
